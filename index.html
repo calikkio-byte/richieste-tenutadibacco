@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prenotazione Eventi | La Tenuta di Bacco</title>
+  <meta name="description" content="Modulo di richiesta prenotazione per eventi privati, matrimoni ed eventi aziendali presso La Tenuta di Bacco." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.5rem;
+      --radius-full: 9999px;
+      --color-bg: #f8f3ee;
+      --color-surface: #fffaf6;
+      --color-surface-2: #f2e7dd;
+      --color-border: #dbcabd;
+      --color-divider: #e9ded5;
+      --color-text: #34261e;
+      --color-text-muted: #7b6659;
+      --color-text-faint: #ad9787;
+      --color-primary: #7b2230;
+      --color-primary-hover: #5d1924;
+      --color-primary-highlight: #f4dbe0;
+      --color-success: #2f6a49;
+      --shadow-sm: 0 8px 24px rgba(52, 38, 30, 0.08);
+      --shadow-md: 0 18px 48px rgba(52, 38, 30, 0.14);
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Manrope', Arial, sans-serif;
+      --content-default: 980px;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at top left, rgba(123,34,48,0.09), transparent 30%),
+        linear-gradient(180deg, #fbf6f2 0%, var(--color-bg) 100%);
+      padding: var(--space-4);
+    }
+
+    img, svg { display: block; max-width: 100%; }
+    button, input, textarea, select { font: inherit; }
+    a { color: inherit; }
+    button {
+      cursor: pointer;
+      border: 0;
+      transition: transform var(--transition-interactive), background var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    :focus-visible {
+      outline: 3px solid rgba(123,34,48,0.28);
+      outline-offset: 2px;
+    }
+
+    .page-shell {
+      max-width: var(--content-default);
+      margin: 0 auto;
+      display: grid;
+      gap: var(--space-8);
+      padding-block: clamp(var(--space-6), 5vw, var(--space-12));
+    }
+
+    .hero,
+    .form-card,
+    .info-card {
+      background: rgba(255, 250, 246, 0.92);
+      border: 1px solid rgba(91, 67, 54, 0.12);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero {
+      border-radius: var(--radius-xl);
+      padding: clamp(var(--space-6), 5vw, var(--space-12));
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-4);
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: var(--text-sm);
+    }
+
+    .brand-mark {
+      width: 2.75rem;
+      height: 2.75rem;
+      color: var(--color-primary);
+      padding: 0.45rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(123,34,48,0.12), rgba(123,34,48,0.03));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      width: fit-content;
+      padding: 0.45rem 0.8rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      line-height: 0.95;
+      max-width: 12ch;
+    }
+
+    .hero p {
+      max-width: 64ch;
+      color: var(--color-text-muted);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .hero-stat {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(91, 67, 54, 0.08);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-1);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .form-card,
+    .info-card {
+      border-radius: var(--radius-xl);
+      padding: clamp(var(--space-5), 3vw, var(--space-8));
+    }
+
+    .section-title {
+      margin-bottom: var(--space-2);
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      line-height: 1;
+    }
+
+    .section-copy {
+      margin-bottom: var(--space-6);
+      color: var(--color-text-muted);
+    }
+
+    form {
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .field,
+    .full {
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label,
+    legend {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .required {
+      color: var(--color-primary);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: var(--color-text);
+      transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(123, 34, 48, 0.12);
+    }
+
+    textarea {
+      min-height: 8rem;
+      resize: vertical;
+    }
+
+    fieldset {
+      border: 0;
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .check-card {
+      position: relative;
+    }
+
+    .check-card input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .check-card label {
+      display: flex;
+      align-items: center;
+      min-height: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color var(--transition-interactive), background var(--transition-interactive), color var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+
+    .check-card input:checked + label {
+      border-color: var(--color-primary);
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      box-shadow: 0 8px 20px rgba(123, 34, 48, 0.12);
+    }
+
+    .hint,
+    .small-note {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      min-height: 3rem;
+      padding: 0.95rem 1.3rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-text);
+      border: 1px solid rgba(91, 67, 54, 0.14);
+    }
+
+    .status {
+      min-height: 1.5rem;
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .status.success { color: var(--color-success); }
+    .status.error { color: #9e2633; }
+
+    .info-stack {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .info-list {
+      display: grid;
+      gap: var(--space-3);
+      list-style: none;
+    }
+
+    .info-list li {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(91, 67, 54, 0.08);
+    }
+
+    .info-list strong {
+      display: block;
+      margin-bottom: var(--space-1);
+      font-size: var(--text-sm);
+    }
+
+    .config-box {
+      margin-top: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: rgba(123,34,48,0.06);
+      border: 1px dashed rgba(123,34,48,0.25);
+    }
+
+    .code-inline {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      word-break: break-word;
+    }
+
+    .footer-note {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      padding-bottom: var(--space-6);
+    }
+
+    @media (max-width: 900px) {
+      .layout,
+      .hero-grid,
+      .checkbox-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-top">
+        <a class="brand" href="https://latenutadibacco.it/" target="_blank" rel="noopener noreferrer" aria-label="Apri il sito La Tenuta di Bacco">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 6C18.8 13.7 16.2 20.4 16.2 26.2C16.2 33.5 19.9 39 24 39C28.1 39 31.8 33.5 31.8 26.2C31.8 20.4 29.2 13.7 24 6Z" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M24 15.5C21 15.5 18.6 17.9 18.6 20.9C18.6 23.9 21 26.3 24 26.3C27 26.3 29.4 23.9 29.4 20.9C29.4 17.9 27 15.5 24 15.5Z" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M24 26.3V42" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          La Tenuta di Bacco
+        </a>
+        <span class="eyebrow">Richiesta disponibilità eventi</span>
+      </div>
+
+      <div>
+        <h1 id="hero-title">Compila il modulo e invia la richiesta su WhatsApp.</h1>
+        <p>
+          Questo form è pensato per raccogliere in modo chiaro le informazioni essenziali per matrimoni, eventi privati, cerimonie ed eventi aziendali. Alla fine, il cliente viene reindirizzato su WhatsApp con il messaggio già pronto da inviare al numero configurato.
+        </p>
+      </div>
+
+      <div class="hero-grid" aria-label="Punti principali del modulo">
+        <article class="hero-stat">
+          <strong>Dati essenziali</strong>
+          <span>Contatti, tipologia evento, numero invitati e durata.</span>
+        </article>
+        <article class="hero-stat">
+          <strong>Servizi richiesti</strong>
+          <span>Scelta multipla per catering, allestimenti, musica e altri servizi.</span>
+        </article>
+        <article class="hero-stat">
+          <strong>Invio immediato</strong>
+          <span>Il messaggio viene preparato e aperto direttamente in WhatsApp.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="layout" aria-label="Modulo e informazioni utili">
+      <div class="form-card">
+        <h2 class="section-title">Richiesta prenotazione</h2>
+        <p class="section-copy">I campi contrassegnati con <span class="required">*</span> sono obbligatori.</p>
+
+        <form id="bookingForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fullName">Nome e cognome <span class="required">*</span></label>
+              <input id="fullName" name="fullName" type="text" autocomplete="name" required placeholder="Es. Mario Rossi" />
+            </div>
+
+            <div class="field">
+              <label for="phone">Numero di telefono <span class="required">*</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" required placeholder="Es. 333 123 4567" />
+            </div>
+
+            <div class="field">
+              <label for="email">Email <span class="required">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required placeholder="nome@email.it" />
+            </div>
+
+            <div class="field">
+              <label for="eventType">Tipologia di evento</label>
+              <select id="eventType" name="eventType">
+                <option value="">Seleziona un'opzione</option>
+                <option>Matrimonio</option>
+                <option>Evento aziendale</option>
+                <option>Evento privato</option>
+                <option>Cresima</option>
+                <option>Comunione</option>
+                <option>Battesimo</option>
+                <option>Compleanno</option>
+                <option>Anniversario</option>
+                <option>Altro</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="guests">Numero di persone</label>
+              <input id="guests" name="guests" type="number" min="1" step="1" placeholder="Es. 80" />
+            </div>
+
+            <div class="field">
+              <label for="daysCount">Numero di giorni</label>
+              <input id="daysCount" name="daysCount" type="number" min="1" step="1" placeholder="Es. 1 o 2" />
+            </div>
+
+            <div class="full">
+              <fieldset>
+                <legend>Tipologie di servizio</legend>
+                <div class="checkbox-grid">
+                  <div class="check-card">
+                    <input id="service-catering" name="services" type="checkbox" value="Catering" />
+                    <label for="service-catering">Catering</label>
+                  </div>
+                  <div class="check-card">
+                    <input id="service-openbar" name="services" type="checkbox" value="Open bar" />
+                    <label for="service-openbar">Open bar</label>
+                  </div>
+                  <div class="check-card">
+                    <input id="service-music" name="services" type="checkbox" value="Musica / DJ" />
+                    <label for="service-music">Musica / DJ</label>
+                  </div>
+                  <div class="check-card">
+                    <input id="service-setup" name="services" type="checkbox" value="Allestimento" />
+                    <label for="service-setup">Allestimento</label>
+                  </div>
+                  <div class="check-card">
+                    <input id="service-ceremony" name="services" type="checkbox" value="Cerimonia in location" />
+                    <label for="service-ceremony">Cerimonia in location</label>
+                  </div>
+                  <div class="check-card">
+                    <input id="service-photo" name="services" type="checkbox" value="Foto / video" />
+                    <label for="service-photo">Foto / video</label>
+                  </div>
+                </div>
+                <p class="hint">Puoi aggiungere altre richieste nel campo note.</p>
+              </fieldset>
+            </div>
+
+            <div class="full">
+              <label for="preferredDates">Giorni scelti</label>
+              <textarea id="preferredDates" name="preferredDates" placeholder="Indica le date preferite, ad esempio: 12 settembre 2026 oppure weekend del 19/20 settembre."></textarea>
+            </div>
+
+            <div class="full">
+              <label for="alternativeDates">Giorni alternativi in caso di non disponibilità</label>
+              <textarea id="alternativeDates" name="alternativeDates" placeholder="Indica eventuali date alternative oppure periodi flessibili."></textarea>
+            </div>
+
+            <div class="full">
+              <label for="notes">Note aggiuntive</label>
+              <textarea id="notes" name="notes" placeholder="Richieste particolari, orari, eventuali bambini, stile evento, esigenze alimentari, ecc."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-primary" type="submit">Invia richiesta su WhatsApp</button>
+            <button class="btn-secondary" type="reset">Azzera il modulo</button>
+          </div>
+
+          <p id="formStatus" class="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <aside class="info-stack">
+        <div class="info-card">
+          <h2 class="section-title">Come funziona</h2>
+          <ul class="info-list" role="list">
+            <li>
+              <strong>1. Il cliente compila il modulo</strong>
+              Tutti i dati essenziali vengono raccolti in modo ordinato.
+            </li>
+            <li>
+              <strong>2. Si apre WhatsApp</strong>
+              Il sistema genera un messaggio già formattato e pronto all'invio.
+            </li>
+            <li>
+              <strong>3. Numero modificabile</strong>
+              Puoi cambiare il numero destinatario in un solo punto del codice.
+            </li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h2 class="section-title">Configurazione rapida</h2>
+          <p class="section-copy">Per sostituire il numero WhatsApp in futuro, modifica questa costante JavaScript:</p>
+          <div class="config-box">
+            <p class="code-inline">const WHATSAPP_NUMBER = '393339791543';</p>
+          </div>
+          <p class="small-note">Usa il formato internazionale senza spazi, senza + e senza zeri iniziali superflui.</p>
+        </div>
+
+        <div class="info-card">
+          <h2 class="section-title">Dati location</h2>
+          <ul class="info-list" role="list">
+            <li>
+              <strong>Indirizzo</strong>
+              Località Rossia di Gossolengo 16, 29020 Piacenza PC
+            </li>
+            <li>
+              <strong>Email</strong>
+              info@latenutadibacco.it
+            </li>
+            <li>
+              <strong>Telefono sito</strong>
+              +39 333 979 1543
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <p class="footer-note">Modulo realizzato per la raccolta richieste eventi di La Tenuta di Bacco.</p>
+  </main>
+
+  <script>
+    const WHATSAPP_NUMBER = '393339791543';
+
+    const form = document.getElementById('bookingForm');
+    const statusBox = document.getElementById('formStatus');
+
+    const getCheckedServices = () => {
+      return Array.from(document.querySelectorAll('input[name="services"]:checked'))
+        .map((input) => input.value);
+    };
+
+    const cleanValue = (value) => value && String(value).trim() ? String(value).trim() : 'Non specificato';
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) {
+        statusBox.textContent = 'Controlla i campi obbligatori evidenziati.';
+        statusBox.className = 'status error';
+        return;
+      }
+
+      const data = new FormData(form);
+      const fullName = cleanValue(data.get('fullName'));
+      const phone = cleanValue(data.get('phone'));
+      const email = cleanValue(data.get('email'));
+      const eventType = cleanValue(data.get('eventType'));
+      const guests = cleanValue(data.get('guests'));
+      const daysCount = cleanValue(data.get('daysCount'));
+      const preferredDates = cleanValue(data.get('preferredDates'));
+      const alternativeDates = cleanValue(data.get('alternativeDates'));
+      const notes = cleanValue(data.get('notes'));
+      const services = getCheckedServices();
+
+      const message = [
+        'Nuova richiesta prenotazione - La Tenuta di Bacco',
+        '',
+        '*Nome e cognome:* ' + fullName,
+        '*Telefono:* ' + phone,
+        '*Email:* ' + email,
+        '*Tipologia di evento:* ' + eventType,
+        '*Numero di persone:* ' + guests,
+        '*Tipologie di servizio:* ' + (services.length ? services.join(', ') : 'Non specificato'),
+        '*Numero di giorni:* ' + daysCount,
+        '*Giorni scelti:* ' + preferredDates,
+        '*Giorni alternativi:* ' + alternativeDates,
+        '*Note aggiuntive:* ' + notes
+      ].join('\n');
+
+      const whatsappUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
+      statusBox.textContent = 'Reindirizzamento a WhatsApp in corso...';
+      statusBox.className = 'status success';
+      window.open(whatsappUrl, '_blank', 'noopener');
+    });
+
+    form.addEventListener('reset', () => {
+      window.setTimeout(() => {
+        statusBox.textContent = '';
+        statusBox.className = 'status';
+      }, 0);
+    });
+  </script>
+</body>
+</html>
