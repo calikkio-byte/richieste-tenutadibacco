@@ -1,650 +1,651 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="light">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prenotazione Eventi | La Tenuta di Bacco</title>
-  <meta name="description" content="Modulo di richiesta prenotazione per eventi privati, matrimoni ed eventi aziendali presso La Tenuta di Bacco." />
+  <title>Configuratore Eventi | La Tenuta di Bacco</title>
+  <meta name="description" content="Configuratore eventi per La Tenuta di Bacco con selezione proposte food, beverage, allestimenti e servizi per richiesta preventivo personalizzato." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root, [data-theme="light"] {
-      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
-      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
-      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
-      --space-1: 0.25rem;
-      --space-2: 0.5rem;
-      --space-3: 0.75rem;
-      --space-4: 1rem;
-      --space-5: 1.25rem;
-      --space-6: 1.5rem;
-      --space-8: 2rem;
-      --space-10: 2.5rem;
-      --space-12: 3rem;
-      --space-16: 4rem;
-      --radius-sm: 0.375rem;
-      --radius-md: 0.75rem;
-      --radius-lg: 1rem;
-      --radius-xl: 1.5rem;
-      --radius-full: 9999px;
-      --color-bg: #f8f3ee;
-      --color-surface: #fffaf6;
-      --color-surface-2: #f2e7dd;
-      --color-border: #dbcabd;
-      --color-divider: #e9ded5;
-      --color-text: #34261e;
-      --color-text-muted: #7b6659;
-      --color-text-faint: #ad9787;
-      --color-primary: #7b2230;
-      --color-primary-hover: #5d1924;
-      --color-primary-highlight: #f4dbe0;
-      --color-success: #2f6a49;
-      --shadow-sm: 0 8px 24px rgba(52, 38, 30, 0.08);
-      --shadow-md: 0 18px 48px rgba(52, 38, 30, 0.14);
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'Manrope', Arial, sans-serif;
-      --content-default: 980px;
-      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    :root {
+      --bg: #f7f1ec;
+      --surface: #fffaf6;
+      --surface-alt: #f2e5dc;
+      --border: #dfcdc0;
+      --text: #30231d;
+      --muted: #77645a;
+      --primary: #8a3040;
+      --primary-dark: #67212d;
+      --primary-soft: #f5dde2;
+      --ok: #2f6a49;
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --shadow: 0 18px 40px rgba(64, 36, 26, 0.10);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Manrope', sans-serif;
     }
 
-    * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; }
     body {
-      min-height: 100vh;
+      margin: 0;
       font-family: var(--font-body);
-      font-size: var(--text-base);
-      line-height: 1.6;
-      color: var(--color-text);
-      background:
-        radial-gradient(circle at top left, rgba(123,34,48,0.09), transparent 30%),
-        linear-gradient(180deg, #fbf6f2 0%, var(--color-bg) 100%);
-      padding: var(--space-4);
+      background: linear-gradient(180deg, #fbf6f2 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.55;
     }
 
-    img, svg { display: block; max-width: 100%; }
-    button, input, textarea, select { font: inherit; }
     a { color: inherit; }
-    button {
-      cursor: pointer;
-      border: 0;
-      transition: transform var(--transition-interactive), background var(--transition-interactive), box-shadow var(--transition-interactive);
-    }
-    button:hover { transform: translateY(-1px); }
-    button:active { transform: translateY(0); }
-    :focus-visible {
-      outline: 3px solid rgba(123,34,48,0.28);
-      outline-offset: 2px;
-    }
 
-    .page-shell {
-      max-width: var(--content-default);
+    .page {
+      width: min(1200px, calc(100% - 32px));
       margin: 0 auto;
-      display: grid;
-      gap: var(--space-8);
-      padding-block: clamp(var(--space-6), 5vw, var(--space-12));
-    }
-
-    .hero,
-    .form-card,
-    .info-card {
-      background: rgba(255, 250, 246, 0.92);
-      border: 1px solid rgba(91, 67, 54, 0.12);
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow-sm);
+      padding: 28px 0 64px;
     }
 
     .hero {
-      border-radius: var(--radius-xl);
-      padding: clamp(var(--space-6), 5vw, var(--space-12));
-      display: grid;
-      gap: var(--space-6);
-    }
-
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      gap: var(--space-4);
-      align-items: flex-start;
-      flex-wrap: wrap;
+      background: radial-gradient(circle at top left, rgba(138,48,64,0.14), transparent 30%), var(--surface);
+      border: 1px solid rgba(80, 53, 43, 0.10);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      margin-bottom: 28px;
     }
 
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: var(--space-3);
+      gap: 12px;
+      margin-bottom: 18px;
       text-decoration: none;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: .04em;
       text-transform: uppercase;
-      font-size: var(--text-sm);
+      font-size: 14px;
     }
 
     .brand-mark {
-      width: 2.75rem;
-      height: 2.75rem;
-      color: var(--color-primary);
-      padding: 0.45rem;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(123,34,48,0.12), rgba(123,34,48,0.03));
+      background: rgba(138,48,64,0.09);
+      color: var(--primary);
+      padding: 8px;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      width: fit-content;
-      padding: 0.45rem 0.8rem;
-      border-radius: var(--radius-full);
-      background: var(--color-primary-highlight);
-      color: var(--color-primary);
-      font-size: var(--text-xs);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1;
+      margin: 0;
     }
 
     h1 {
-      font-family: var(--font-display);
-      font-size: var(--text-2xl);
-      line-height: 0.95;
-      max-width: 12ch;
+      font-size: clamp(38px, 6vw, 64px);
+      max-width: 11ch;
+      margin-bottom: 14px;
     }
 
-    .hero p {
-      max-width: 64ch;
-      color: var(--color-text-muted);
+    .lead {
+      max-width: 72ch;
+      color: var(--muted);
+      margin: 0;
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-4);
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .hero-stat {
-      padding: var(--space-4);
-      border-radius: var(--radius-lg);
-      background: rgba(255,255,255,0.55);
-      border: 1px solid rgba(91, 67, 54, 0.08);
-    }
-
-    .hero-stat strong {
-      display: block;
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-1);
+    .badge {
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.6fr 0.9fr;
-      gap: var(--space-8);
+      grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+      gap: 24px;
       align-items: start;
     }
 
-    .form-card,
-    .info-card {
-      border-radius: var(--radius-xl);
-      padding: clamp(var(--space-5), 3vw, var(--space-8));
+    .panel {
+      background: var(--surface);
+      border: 1px solid rgba(80, 53, 43, 0.10);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 24px;
     }
 
-    .section-title {
-      margin-bottom: var(--space-2);
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      line-height: 1;
+    .section {
+      border-top: 1px solid #efe1d6;
+      padding-top: 18px;
+      margin-top: 18px;
     }
 
-    .section-copy {
-      margin-bottom: var(--space-6);
-      color: var(--color-text-muted);
+    .section:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+      margin-top: 0;
     }
 
-    form {
-      display: grid;
-      gap: var(--space-6);
+    .section summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      gap: 12px;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-4);
+    .section summary::-webkit-details-marker {
+      display: none;
     }
 
-    .field,
-    .full {
-      display: grid;
-      gap: var(--space-2);
+    .section summary::after {
+      content: "+";
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 22px;
+      font-weight: 500;
+      flex: 0 0 auto;
     }
 
-    .full { grid-column: 1 / -1; }
-
-    label,
-    legend {
-      font-size: var(--text-sm);
-      font-weight: 700;
-      color: var(--color-text);
+    .section[open] summary::after {
+      content: "−";
     }
 
-    .required {
-      color: var(--color-primary);
+    .section > :not(summary) {
+      margin-top: 18px;
     }
 
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 0.95rem 1rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
-      background: #fff;
-      color: var(--color-text);
-      transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive);
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: var(--color-text-faint);
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 4px rgba(123, 34, 48, 0.12);
-    }
-
-    textarea {
-      min-height: 8rem;
-      resize: vertical;
-    }
-
-    fieldset {
-      border: 0;
-      display: grid;
-      gap: var(--space-3);
-    }
-
-    .checkbox-grid {
+    .option-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3);
+      gap: 12px;
     }
 
-    .check-card {
+    .option {
       position: relative;
     }
 
-    .check-card input {
+    .option input,
+    .radio-option input {
       position: absolute;
       inset: 0;
       opacity: 0;
       cursor: pointer;
     }
 
-    .check-card label {
-      display: flex;
-      align-items: center;
+    .option label,
+    .radio-option label {
+      display: block;
       min-height: 100%;
-      padding: 0.95rem 1rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
       background: #fff;
-      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
       cursor: pointer;
-      transition: border-color var(--transition-interactive), background var(--transition-interactive), color var(--transition-interactive), box-shadow var(--transition-interactive);
+      transition: .18s ease;
     }
 
-    .check-card input:checked + label {
-      border-color: var(--color-primary);
-      background: var(--color-primary-highlight);
-      color: var(--color-primary);
-      box-shadow: 0 8px 20px rgba(123, 34, 48, 0.12);
+    .option label strong,
+    .radio-option label strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
     }
-    .hint {
-      font-size: var(--text-xs);
-      color: var(--color-text-muted);
+
+    .option label span,
+    .radio-option label span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .option input:checked + label,
+    .radio-option input:checked + label {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 10px 22px rgba(138,48,64,0.10);
+    }
+
+    .radio-stack,
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field,
+    .full {
+      display: grid;
+      gap: 8px;
+    }
+
+    .date-range {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .date-separator {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label,
+    legend {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .summary-card {
+      position: sticky;
+      top: 20px;
+    }
+
+    .summary-box {
+      background: var(--surface-alt);
+      border: 1px dashed rgba(138,48,64,0.22);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 14px 0 18px;
+    }
+
+    .summary-box ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .summary-box li {
+      margin: 8px 0;
+      color: var(--muted);
     }
 
     .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-3);
-      align-items: center;
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
     }
 
-    .btn-primary,
-    .btn-secondary {
-      min-height: 3rem;
-      padding: 0.95rem 1.3rem;
-      border-radius: var(--radius-full);
+    .button {
+      min-height: 52px;
+      border: 0;
+      border-radius: 999px;
+      font: inherit;
       font-weight: 700;
-      font-size: var(--text-sm);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      cursor: pointer;
+      padding: 0 18px;
+      transition: .18s ease;
     }
 
-    .btn-primary {
-      background: var(--color-primary);
+    .button.primary {
+      background: var(--primary);
       color: #fff;
-      box-shadow: var(--shadow-sm);
     }
 
-    .btn-primary:hover { background: var(--color-primary-hover); }
+    .button.primary:hover { background: var(--primary-dark); }
 
-    .btn-secondary {
+    .button.secondary {
       background: transparent;
-      color: var(--color-text);
-      border: 1px solid rgba(91, 67, 54, 0.14);
+      color: var(--text);
+      border: 1px solid rgba(80,53,43,0.14);
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
     }
 
     .status {
-      min-height: 1.5rem;
-      font-size: var(--text-sm);
-      font-weight: 600;
+      min-height: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ok);
+      margin-top: 12px;
     }
 
-    .status.success { color: var(--color-success); }
-    .status.error { color: #9e2633; }
-
-    .info-stack {
-      display: grid;
-      gap: var(--space-4);
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
     }
 
-    .info-list {
-      display: grid;
-      gap: var(--space-3);
-      list-style: none;
-    }
-
-    .info-list li {
-      padding: var(--space-4);
-      border-radius: var(--radius-lg);
-      background: rgba(255,255,255,0.58);
-      border: 1px solid rgba(91, 67, 54, 0.08);
-    }
-
-    .info-list strong {
-      display: block;
-      margin-bottom: var(--space-1);
-      font-size: var(--text-sm);
-    }
-
-    .footer-note {
-      font-size: var(--text-xs);
-      color: var(--color-text-muted);
-      text-align: center;
-      padding-bottom: var(--space-6);
-    }
-
-    @media (max-width: 900px) {
-      .layout,
-      .hero-grid,
-      .checkbox-grid,
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, 1200px); }
+      .hero, .panel { padding: 18px; }
+      .option-grid, .field-grid { grid-template-columns: 1fr; }
       h1 { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <main class="page-shell">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-top">
-        <a class="brand" href="https://latenutadibacco.it/" target="_blank" rel="noopener noreferrer" aria-label="Apri il sito La Tenuta di Bacco">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 6C18.8 13.7 16.2 20.4 16.2 26.2C16.2 33.5 19.9 39 24 39C28.1 39 31.8 33.5 31.8 26.2C31.8 20.4 29.2 13.7 24 6Z" stroke="currentColor" stroke-width="2.4"/>
-              <path d="M24 15.5C21 15.5 18.6 17.9 18.6 20.9C18.6 23.9 21 26.3 24 26.3C27 26.3 29.4 23.9 29.4 20.9C29.4 17.9 27 15.5 24 15.5Z" stroke="currentColor" stroke-width="2.4"/>
-              <path d="M24 26.3V42" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-            </svg>
-          </span>
-          La Tenuta di Bacco
-        </a>
-        <span class="eyebrow">Richiesta disponibilità eventi</span>
-      </div>
-
-      <div>
-        <h1 id="hero-title">Compila il modulo e invia la richiesta su WhatsApp.</h1>
-        <p>
-          Questo form è pensato per raccogliere in modo chiaro le informazioni essenziali per matrimoni, eventi privati, cerimonie ed eventi aziendali. Alla fine, il cliente viene reindirizzato su WhatsApp con il messaggio già pronto da inviare al numero configurato.
-        </p>
-      </div>
-
-      <div class="hero-grid" aria-label="Punti principali del modulo">
-        <article class="hero-stat">
-          <strong>Dati essenziali</strong>
-          <span>Contatti, tipologia evento, numero invitati e durata.</span>
-        </article>
-        <article class="hero-stat">
-          <strong>Servizi richiesti</strong>
-          <span>Scelta multipla per catering, allestimenti, musica e altri servizi.</span>
-        </article>
-        <article class="hero-stat">
-          <strong>Invio immediato</strong>
-          <span>Il messaggio viene preparato e aperto direttamente in WhatsApp.</span>
-        </article>
+  <main class="page">
+    <section class="hero">
+      <a class="brand" href="https://latenutadibacco.it/" target="_blank" rel="noopener noreferrer">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 6C18.8 13.7 16.2 20.4 16.2 26.2C16.2 33.5 19.9 39 24 39C28.1 39 31.8 33.5 31.8 26.2C31.8 20.4 29.2 13.7 24 6Z" stroke="currentColor" stroke-width="2.4"/>
+            <path d="M24 15.5C21 15.5 18.6 17.9 18.6 20.9C18.6 23.9 21 26.3 24 26.3C27 26.3 29.4 23.9 29.4 20.9C29.4 17.9 27 15.5 24 15.5Z" stroke="currentColor" stroke-width="2.4"/>
+            <path d="M24 26.3V42" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        La Tenuta di Bacco
+      </a>
+      <h1>Configuratore per richieste evento.</h1>
+      
+      <div class="hero-badges">
+        <span class="badge">Invio su WhatsApp</span>
       </div>
     </section>
 
-    <section class="layout" aria-label="Modulo e informazioni utili">
-      <div class="form-card">
-        <h2 class="section-title">Richiesta prenotazione</h2>
-        <p class="section-copy">I campi contrassegnati con <span class="required">*</span> sono obbligatori.</p>
-
-        <form id="bookingForm">
-          <div class="form-grid">
+    <div class="layout">
+      <form class="panel" id="configuratorForm">
+        <details class="section" open>
+          <summary><h2>Dati cliente</h2></summary>
+          
+          <div class="field-grid">
             <div class="field">
-              <label for="fullName">Nome e cognome <span class="required">*</span></label>
-              <input id="fullName" name="fullName" type="text" autocomplete="name" required placeholder="Es. Mario Rossi" />
+              <label for="name">Nome e cognome</label>
+              <input id="name" name="name" type="text" required placeholder="Es. Mario Rossi" />
             </div>
-
             <div class="field">
-              <label for="phone">Numero di telefono <span class="required">*</span></label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" required placeholder="Es. 333 123 4567" />
+              <label for="phone">Telefono</label>
+              <input id="phone" name="phone" type="tel" required placeholder="Es. 333 123 4567" />
             </div>
-
             <div class="field">
-              <label for="email">Email <span class="required">*</span></label>
-              <input id="email" name="email" type="email" autocomplete="email" required placeholder="nome@email.it" />
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" required placeholder="Es. nome@email.it" />
             </div>
-
             <div class="field">
-              <label for="eventType">Tipologia di evento</label>
+              <label for="eventType">Tipologia evento</label>
               <select id="eventType" name="eventType">
-                <option value="">Seleziona un'opzione</option>
+                <option value="">Seleziona</option>
                 <option>Matrimonio</option>
-                <option>Evento aziendale</option>
-                <option>Evento privato</option>
-                <option>Cresima</option>
-                <option>Comunione</option>
                 <option>Battesimo</option>
+                <option>Comunione</option>
+                <option>Cresima</option>
+                <option>Evento aziendale</option>
                 <option>Compleanno</option>
-                <option>Anniversario</option>
+                <option>Evento privato</option>
                 <option>Altro</option>
               </select>
             </div>
-
             <div class="field">
-              <label for="guests">Numero di persone</label>
-              <input id="guests" name="guests" type="number" min="1" step="1" placeholder="Es. 80" />
+              <label for="guests">Numero invitati</label>
+              <input id="guests" name="guests" type="number" min="1" placeholder="Es. 80" />
             </div>
-
             <div class="field">
-              <label for="daysCount">Numero di giorni</label>
-              <input id="daysCount" name="daysCount" type="number" min="1" step="1" placeholder="Es. 1 o 2" />
-            </div>
-
-            <div class="full">
-              <fieldset>
-                <legend>Tipologie di servizio</legend>
-                <div class="checkbox-grid">
-                  <div class="check-card">
-                    <input id="service-catering" name="services" type="checkbox" value="Catering" />
-                    <label for="service-catering">Catering</label>
-                  </div>
-                  <div class="check-card">
-                    <input id="service-openbar" name="services" type="checkbox" value="Open bar" />
-                    <label for="service-openbar">Open bar</label>
-                  </div>
-                  <div class="check-card">
-                    <input id="service-music" name="services" type="checkbox" value="Musica / DJ" />
-                    <label for="service-music">Musica / DJ</label>
-                  </div>
-                  <div class="check-card">
-                    <input id="service-setup" name="services" type="checkbox" value="Allestimento" />
-                    <label for="service-setup">Allestimento</label>
-                  </div>
-                  <div class="check-card">
-                    <input id="service-ceremony" name="services" type="checkbox" value="Cerimonia in location" />
-                    <label for="service-ceremony">Cerimonia in location</label>
-                  </div>
-                  <div class="check-card">
-                    <input id="service-photo" name="services" type="checkbox" value="Foto / video" />
-                    <label for="service-photo">Foto / video</label>
-                  </div>
-                </div>
-                <p class="hint">Puoi aggiungere altre richieste nel campo note.</p>
-              </fieldset>
-            </div>
-
-            <div class="full">
-              <label for="preferredDates">Giorni scelti</label>
-              <textarea id="preferredDates" name="preferredDates" placeholder="Indica le date preferite, ad esempio: 12 settembre 2026 oppure weekend del 19/20 settembre."></textarea>
-            </div>
-
-            <div class="full">
-              <label for="alternativeDates">Giorni alternativi in caso di non disponibilità</label>
-              <textarea id="alternativeDates" name="alternativeDates" placeholder="Indica eventuali date alternative oppure periodi flessibili."></textarea>
-            </div>
-
-            <div class="full">
-              <label for="notes">Note aggiuntive</label>
-              <textarea id="notes" name="notes" placeholder="Richieste particolari, orari, eventuali bambini, stile evento, esigenze alimentari, ecc."></textarea>
+              <label for="timing">Fascia oraria / timing</label>
+              <input id="timing" name="timing" type="text" placeholder="Es. pranzo, cena, aperitivo serale" />
             </div>
           </div>
+        </details>
 
-          <div class="actions">
-            <button class="btn-primary" type="submit">Invia richiesta su WhatsApp</button>
-            <button class="btn-secondary" type="reset">Azzera il modulo</button>
+        <details class="section">
+          <summary><h2>Aperitivo e buffet</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="ap-buffet" type="checkbox" name="selections" value="Gran buffet di aperitivi e antipasti" checked><label for="ap-buffet"><strong>Gran buffet di aperitivi e antipasti</strong><span>Formula completa buffet iniziale.</span></label></div>
+            <div class="option"><input id="ap-finger" type="checkbox" name="selections" value="Finger food assortiti"><label for="ap-finger"><strong>Finger food assortiti</strong><span>Croissant farciti, tartellette, focaccia gourmet, mini bun, tramezzini, pizza gourmet e proposte simili.</span></label></div>
+            <div class="option"><input id="ap-salumi" type="checkbox" name="selections" value="Selezione salumi della cantina"><label for="ap-salumi"><strong>Selezione salumi</strong><span>Tagliere rustico, coppa, culatello, crudo e altre selezioni stagionate.</span></label></div>
+            <div class="option"><input id="ap-formaggi" type="checkbox" name="selections" value="Selezione formaggi"><label for="ap-formaggi"><strong>Selezione formaggi</strong><span>Grana Padano, caciotta, mozzarella di bufala, treccia e abbinamenti.</span></label></div>
+            <div class="option"><input id="ap-pane" type="checkbox" name="selections" value="Cesto del fornaio"><label for="ap-pane"><strong>Cesto del fornaio</strong><span>Grissini, focaccia all'olio e rosmarino, pane e francesini.</span></label></div>
+            <div class="option"><input id="ap-pesce" type="checkbox" name="selections" value="Isola del pescatore"><label for="ap-pesce"><strong>Isola del pescatore</strong><span>Tataki di tonno, salmone marinato, pesce spada, ostriche e crudi di mare.</span></label></div>
           </div>
+        </details>
 
-          <p id="formStatus" class="status" aria-live="polite"></p>
-        </form>
-      </div>
+        <details class="section">
+          <summary><h2>Proposte speciali buffet</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="sp-farro" type="checkbox" name="selections" value="Insalatina di farro, seppioline e basilico"><label for="sp-farro"><strong>Farro e seppioline</strong><span>Proposta fresca da buffet.</span></label></div>
+            <div class="option"><input id="sp-bruschette" type="checkbox" name="selections" value="Bruschettine mignon ai pomodorini"><label for="sp-bruschette"><strong>Bruschettine mignon</strong><span>Versione classica aperitivo.</span></label></div>
+            <div class="option"><input id="sp-gazpacho" type="checkbox" name="selections" value="Gazpacho e pomo confit"><label for="sp-gazpacho"><strong>Gazpacho e pomo confit</strong><span>Variante fresca e leggera.</span></label></div>
+            <div class="option"><input id="sp-hummus" type="checkbox" name="selections" value="Hummus e carotine croccanti"><label for="sp-hummus"><strong>Hummus e carotine</strong><span>Opzione vegetariana.</span></label></div>
+            <div class="option"><input id="sp-baccala" type="checkbox" name="selections" value="Baccalà mantecato olive e capperi"><label for="sp-baccala"><strong>Baccalà mantecato</strong><span>Proposta gourmet di pesce.</span></label></div>
+            <div class="option"><input id="sp-riso" type="checkbox" name="selections" value="Riso venere con gamberetti e zucchine"><label for="sp-riso"><strong>Riso venere con gamberetti</strong><span>Monoporzione fredda da buffet.</span></label></div>
+          </div>
+        </details>
 
-      <aside class="info-stack">
-        <div class="info-card">
-          <h2 class="section-title">Come funziona</h2>
-          <ul class="info-list" role="list">
-            <li>
-              <strong>1. Il cliente compila il modulo</strong>
-              Tutti i dati essenziali vengono raccolti in modo ordinato.
-            </li>
-            <li>
-              <strong>2. Si apre WhatsApp</strong>
-              Il sistema genera un messaggio già formattato e pronto all'invio.
-            </li>
-            <li>
-              <strong>3. Numero modificabile</strong>
-              Puoi cambiare il numero destinatario in un solo punto del codice.
-            </li>
+        <details class="section">
+          <summary><h2>Primi piatti</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="pr-tortelli" type="checkbox" name="selections" value="Tortelli piacentini"><label for="pr-tortelli"><strong>Tortelli piacentini</strong><span>Classico del territorio.</span></label></div>
+            <div class="option"><input id="pr-risotto-culatello" type="checkbox" name="selections" value="Risotto con crumble di culatello"><label for="pr-risotto-culatello"><strong>Risotto con crumble di culatello</strong><span>Presente in più proposte.</span></label></div>
+            <div class="option"><input id="pr-risotto-anatra" type="checkbox" name="selections" value="Risotto alla parmigiana e ragù d'anatra"><label for="pr-risotto-anatra"><strong>Risotto alla parmigiana e ragù d'anatra</strong><span>Formula pranzo/cerimonia.</span></label></div>
+            <div class="option"><input id="pr-gnocco" type="checkbox" name="selections" value="Gnocco alla puttanesca con tonno a crudo"><label for="pr-gnocco"><strong>Gnocco alla puttanesca con tonno a crudo</strong><span>Proposta più creativa.</span></label></div>
+            <div class="option"><input id="pr-pacchero" type="checkbox" name="selections" value="Pacchero ai 3 pomodori burrata e basilico"><label for="pr-pacchero"><strong>Pacchero ai 3 pomodori</strong><span>Con burrata e basilico.</span></label></div>
+            <div class="option"><input id="pr-lasagne" type="checkbox" name="selections" value="Lasagne"><label for="pr-lasagne"><strong>Lasagne</strong><span>Proposta informale o aziendale.</span></label></div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary><h2>Secondi e servizio al tavolo</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="se-tataki" type="checkbox" name="selections" value="Tataki di salmone con zucchine e mandorle"><label for="se-tataki"><strong>Tataki di salmone</strong><span>Con zucchine e mandorle croccanti.</span></label></div>
+            <div class="option"><input id="se-vitello" type="checkbox" name="selections" value="Vitello tonnato"><label for="se-vitello"><strong>Vitello tonnato</strong><span>Secondo classico.</span></label></div>
+            <div class="option"><input id="se-ribs" type="checkbox" name="selections" value="Ribs di maiale al barbecue"><label for="se-ribs"><strong>Ribs di maiale al barbecue</strong><span>Proposta più conviviale.</span></label></div>
+            <div class="option"><input id="se-filetto" type="checkbox" name="selections" value="Filetto di maiale con patate e verdure al forno"><label for="se-filetto"><strong>Filetto di maiale</strong><span>Con patate e verdure al forno.</span></label></div>
+            <div class="option"><input id="se-2primi" type="checkbox" name="selections" value="Due primi a scelta"><label for="se-2primi"><strong>Due primi a scelta</strong><span>Formula completa servita al tavolo.</span></label></div>
+            <div class="option"><input id="se-secondo" type="checkbox" name="selections" value="Un secondo con contorno a scelta"><label for="se-secondo"><strong>Un secondo con contorno</strong><span>Da definire in fase di preventivo.</span></label></div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary><h2>Dessert, torta e beverage</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="de-dolci" type="checkbox" name="selections" value="Buffet dei dolci e frutta"><label for="de-dolci"><strong>Buffet dolci e frutta</strong><span>Frutta sul ghiaccio, bignè, crostatine e dolci assortiti.</span></label></div>
+            <div class="option"><input id="de-torta" type="checkbox" name="selections" value="Torta evento"><label for="de-torta"><strong>Torta evento</strong><span>Nuziale o personalizzata.</span></label></div>
+            <div class="option"><input id="de-vini" type="checkbox" name="selections" value="Vini a tavola Poggiarello"><label for="de-vini"><strong>Vini a tavola</strong><span>Ortrugo, Gutturnio frizzante, Gutturnio fermo.</span></label></div>
+            <div class="option"><input id="de-spritz" type="checkbox" name="selections" value="Caraffe di spritz"><label for="de-spritz"><strong>Caraffe di spritz</strong><span>Ricorrenti nelle formule aperitivo.</span></label></div>
+            <div class="option"><input id="de-birra" type="checkbox" name="selections" value="Birra alla spina"><label for="de-birra"><strong>Birra alla spina</strong><span>Presente in eventi più informali.</span></label></div>
+            <div class="option"><input id="de-openbar" type="checkbox" name="selections" value="Open bar"><label for="de-openbar"><strong>Open bar</strong><span>Con possibilità di stuzzichini a bordo piscina.</span></label></div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary><h2>Allestimento e mise en place</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="al-buffet" type="checkbox" name="selections" value="Allestimento buffet in argenteria, ceramica, vetro e legno"><label for="al-buffet"><strong>Allestimento buffet premium</strong><span>Argenteria, ceramica, vetro e legno.</span></label></div>
+            <div class="option"><input id="al-mono" type="checkbox" name="selections" value="Finger food in monoporzioni ceramica e vetro"><label for="al-mono"><strong>Monoporzioni premium</strong><span>Finger serviti in ceramica e vetro.</span></label></div>
+            <div class="option"><input id="al-tavoli" type="checkbox" name="selections" value="Tavoli rotondi"><label for="al-tavoli"><strong>Tavoli rotondi</strong><span>Configurazione banqueting ricorrente.</span></label></div>
+            <div class="option"><input id="al-tovaglie" type="checkbox" name="selections" value="Tovagliato bianco o avorio"><label for="al-tovaglie"><strong>Tovagliato bianco o avorio</strong><span>Con possibilità di gestione cliente o location.</span></label></div>
+            <div class="option"><input id="al-calici" type="checkbox" name="selections" value="Calici e tumblers"><label for="al-calici"><strong>Calici e tumblers</strong><span>Cristallo soffiato o policarbonato a seconda del setup.</span></label></div>
+            <div class="option"><input id="al-posate" type="checkbox" name="selections" value="Posateria e tovaglioli"><label for="al-posate"><strong>Posateria e tovaglioli</strong><span>Mise en place base evento.</span></label></div>
+            <div class="option"><input id="al-sedie-chiavari" type="checkbox" name="selections" value="Sedie chiavarina con cuscino"><label for="al-sedie-chiavari"><strong>Chiavarina con cuscino</strong><span>Soluzione classica cerimonia.</span></label></div>
+            <div class="option"><input id="al-sedie-queen" type="checkbox" name="selections" value="Sedie Queen Pedrali"><label for="al-sedie-queen"><strong>Sedie Queen Pedrali</strong><span>Setup più elegante/moderno.</span></label></div>
+            <div class="option"><input id="al-sedie-pvc" type="checkbox" name="selections" value="Sedie Pedrali in PVC"><label for="al-sedie-pvc"><strong>Sedie Pedrali PVC</strong><span>Soluzione più pratica da evento.</span></label></div>
+            <div class="option"><input id="al-sottopiatti" type="checkbox" name="selections" value="Sottopiatti a scelta"><label for="al-sottopiatti"><strong>Sottopiatti a scelta</strong><span>Pink Kaleido, Midollino sbiancato o altre opzioni.</span></label></div>
+            <div class="option"><input id="al-luxury" type="checkbox" name="selections" value="Piatti luxury"><label for="al-luxury"><strong>Piatti luxury</strong><span>Per aperitivo, dessert o pasta bowl.</span></label></div>
+            <div class="option"><input id="al-personale" type="checkbox" name="selections" value="Personale di servizio"><label for="al-personale"><strong>Personale di servizio</strong><span>Barman, camerieri, cuochi o staff dedicato.</span></label></div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary><h2>Spazi e servizi extra</h2></summary>
+          
+          <div class="option-grid">
+            <div class="option"><input id="ex-piscina" type="checkbox" name="selections" value="Accesso piscina"><label for="ex-piscina"><strong>Accesso piscina</strong><span>Per aperitivo o momento dedicato.</span></label></div>
+            <div class="option"><input id="ex-sala" type="checkbox" name="selections" value="Sala in esclusiva"><label for="ex-sala"><strong>Sala in esclusiva</strong><span>Per meeting, evento o pranzo/cena riservata.</span></label></div>
+            <div class="option"><input id="ex-location" type="checkbox" name="selections" value="Location in esclusiva"><label for="ex-location"><strong>Location in esclusiva</strong><span>Parco, piscina, chioschi e saloni interni.</span></label></div>
+            <div class="option"><input id="ex-menu-bimbi" type="checkbox" name="selections" value="Menu bimbi"><label for="ex-menu-bimbi"><strong>Menu bimbi</strong><span>Aperitivi buffet più pasta al pomodoro e cotoletta con patatine.</span></label></div>
+            <div class="option"><input id="ex-dj" type="checkbox" name="selections" value="DJ"><label for="ex-dj"><strong>DJ</strong><span>Intrattenimento musicale.</span></label></div>
+            <div class="option"><input id="ex-siae" type="checkbox" name="selections" value="SIAE"><label for="ex-siae"><strong>SIAE</strong><span>Gestione autorizzazioni musicali.</span></label></div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary><h2>Date e altre richieste</h2></summary>
+          <div class="field-grid">
+            <div class="full">
+              <label for="preferredDateStart">Periodo preferito</label>
+              <div class="date-range">
+                <input id="preferredDateStart" name="preferredDateStart" type="date" />
+                <span class="date-separator">a</span>
+                <input id="preferredDateEnd" name="preferredDateEnd" type="date" />
+              </div>
+            </div>
+            <div class="full">
+              <label for="alternativeDateStart">Periodo alternativo</label>
+              <div class="date-range">
+                <input id="alternativeDateStart" name="alternativeDateStart" type="date" />
+                <span class="date-separator">a</span>
+                <input id="alternativeDateEnd" name="alternativeDateEnd" type="date" />
+              </div>
+            </div>
+            <div class="full">
+              <label for="customRequests">Richieste personalizzate</label>
+              <textarea id="customRequests" name="customRequests" placeholder="Allergie, intolleranze, menu vegetariani, stile allestimento, timing particolari, ecc."></textarea>
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <aside class="panel summary-card">
+        <h2>Riepilogo richiesta</h2>
+        
+        <div class="summary-box" id="summaryBox">
+          <ul id="summaryList">
+            <li>Nessuna proposta selezionata.</li>
           </ul>
         </div>
-
-        <div class="info-card">
-          <h2 class="section-title">Dati location</h2>
-          <ul class="info-list" role="list">
-            <li>
-              <strong>Indirizzo</strong>
-              Località Rossia di Gossolengo 16, 29020 Piacenza PC
-            </li>
-            <li>
-              <strong>Email</strong>
-              info@latenutadibacco.it
-            </li>
-            <li>
-              <strong>Telefono sito</strong>
-              +39 333 979 1543
-            </li>
-          </ul>
+        <div class="actions">
+          <button class="button primary" id="sendWhatsapp" type="button">Invia riepilogo su WhatsApp</button>
+          <button class="button secondary" id="resetSelections" type="button">Azzera selezioni</button>
         </div>
+        <p class="status" id="status"></p>
+        
       </aside>
-    </section>
-
-    <p class="footer-note">Modulo realizzato per la raccolta richieste eventi di La Tenuta di Bacco.</p>
+    </div>
   </main>
 
   <script>
     const WHATSAPP_NUMBER = '393339791543';
+    const form = document.getElementById('configuratorForm');
+    const summaryList = document.getElementById('summaryList');
+    const status = document.getElementById('status');
+    const sendBtn = document.getElementById('sendWhatsapp');
+    const resetBtn = document.getElementById('resetSelections');
 
-    const form = document.getElementById('bookingForm');
-    const statusBox = document.getElementById('formStatus');
+    function getSelections() {
+      return Array.from(document.querySelectorAll('input[name="selections"]:checked')).map(el => el.value);
+    }
 
-    const getCheckedServices = () => {
-      return Array.from(document.querySelectorAll('input[name="services"]:checked'))
-        .map((input) => input.value);
-    };
+    function safe(value, fallback = 'Non specificato') {
+      return value && String(value).trim() ? String(value).trim() : fallback;
+    }
 
-    const cleanValue = (value) => value && String(value).trim() ? String(value).trim() : 'Non specificato';
-
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      if (!form.reportValidity()) {
-        statusBox.textContent = 'Controlla i campi obbligatori evidenziati.';
-        statusBox.className = 'status error';
+    function renderSummary() {
+      const selections = getSelections();
+      summaryList.innerHTML = '';
+      if (!selections.length) {
+        summaryList.innerHTML = '<li>Nessuna proposta selezionata.</li>';
         return;
       }
+      selections.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        summaryList.appendChild(li);
+      });
+    }
 
-      const data = new FormData(form);
-      const fullName = cleanValue(data.get('fullName'));
-      const phone = cleanValue(data.get('phone'));
-      const email = cleanValue(data.get('email'));
-      const eventType = cleanValue(data.get('eventType'));
-      const guests = cleanValue(data.get('guests'));
-      const daysCount = cleanValue(data.get('daysCount'));
-      const preferredDates = cleanValue(data.get('preferredDates'));
-      const alternativeDates = cleanValue(data.get('alternativeDates'));
-      const notes = cleanValue(data.get('notes'));
-      const services = getCheckedServices();
-
-      const message = [
-        'Nuova richiesta prenotazione - La Tenuta di Bacco',
+    function buildMessage() {
+      const selections = getSelections();
+      const lines = [
+        'Richiesta configuratore - La Tenuta di Bacco',
         '',
-        '*Nome e cognome:* ' + fullName,
-        '*Telefono:* ' + phone,
-        '*Email:* ' + email,
-        '*Tipologia di evento:* ' + eventType,
-        '*Numero di persone:* ' + guests,
-        '*Tipologie di servizio:* ' + (services.length ? services.join(', ') : 'Non specificato'),
-        '*Numero di giorni:* ' + daysCount,
-        '*Giorni scelti:* ' + preferredDates,
-        '*Giorni alternativi:* ' + alternativeDates,
-        '*Note aggiuntive:* ' + notes
-      ].join('\n');
+        '*Nome:* ' + safe(form.name.value),
+        '*Telefono:* ' + safe(form.phone.value),
+        '*Email:* ' + safe(form.email.value),
+        '*Tipologia evento:* ' + safe(form.eventType.value),
+        '*Numero invitati:* ' + safe(form.guests.value),
+        '*Fascia oraria / timing:* ' + safe(form.timing.value),
+        '',
+        '*Proposte selezionate:*'
+      ];
 
-      const whatsappUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
-      statusBox.textContent = 'Reindirizzamento a WhatsApp in corso...';
-      statusBox.className = 'status success';
-      window.open(whatsappUrl, '_blank', 'noopener');
+      if (selections.length) {
+        selections.forEach(item => lines.push('- ' + item));
+      } else {
+        lines.push('- Nessuna proposta selezionata');
+      }
+
+      lines.push('');
+      const preferredRange = [form.preferredDateStart.value, form.preferredDateEnd.value].filter(Boolean).join(' → ');
+      const alternativeRange = [form.alternativeDateStart.value, form.alternativeDateEnd.value].filter(Boolean).join(' → ');
+      lines.push('*Periodo preferito:* ' + safe(preferredRange));
+      lines.push('*Periodo alternativo:* ' + safe(alternativeRange));
+      lines.push('*Richieste personalizzate:* ' + safe(form.customRequests.value));
+      return lines.join('\n');
+    }
+
+    form.addEventListener('input', renderSummary);
+    form.addEventListener('change', renderSummary);
+
+    sendBtn.addEventListener('click', () => {
+      if (!form.reportValidity()) {
+        status.textContent = 'Compila prima i campi obbligatori.';
+        return;
+      }
+      const text = buildMessage();
+      const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(text);
+      status.textContent = 'Apro WhatsApp con il riepilogo compilato...';
+      window.open(url, '_blank', 'noopener');
     });
 
-    form.addEventListener('reset', () => {
-      window.setTimeout(() => {
-        statusBox.textContent = '';
-        statusBox.className = 'status';
-      }, 0);
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      renderSummary();
+      status.textContent = '';
     });
+
+    renderSummary();
   </script>
 </body>
 </html>
