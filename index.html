@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configuratore Eventi | La Tenuta di Bacco</title>
-  <meta name="description" content="Configuratore eventi per La Tenuta di Bacco con selezione proposte food, beverage, allestimenti e servizi per richiesta preventivo personalizzato." />
+  <title>Configuratore Eventi e Preventivi | La Tenuta di Bacco</title>
+  <meta name="description" content="Configuratore eventi per La Tenuta di Bacco: selezione di proposte food, beverage, allestimenti e servizi, con riepilogo per WhatsApp e preventivo stampabile." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -73,6 +73,7 @@
       background: rgba(138,48,64,0.09);
       color: var(--primary);
       padding: 8px;
+      flex: 0 0 auto;
     }
 
     h1, h2, h3 {
@@ -130,7 +131,7 @@
       margin-top: 18px;
     }
 
-    .section:first-of-type {
+    form > .section:first-child {
       border-top: 0;
       padding-top: 0;
       margin-top: 0;
@@ -182,16 +183,14 @@
       position: relative;
     }
 
-    .option input,
-    .radio-option input {
+    .option input {
       position: absolute;
       inset: 0;
       opacity: 0;
       cursor: pointer;
     }
 
-    .option label,
-    .radio-option label {
+    .option label {
       display: block;
       min-height: 100%;
       background: #fff;
@@ -202,31 +201,73 @@
       transition: .18s ease;
     }
 
-    .option label strong,
-    .radio-option label strong {
+    .option label strong {
       display: block;
       margin-bottom: 4px;
       font-size: 15px;
     }
 
-    .option label span,
-    .radio-option label span {
+    .option label span {
       font-size: 13px;
       color: var(--muted);
     }
 
-    .option input:checked + label,
-    .radio-option input:checked + label {
+    .option input:checked + label {
       border-color: var(--primary);
       background: var(--primary-soft);
       box-shadow: 0 10px 22px rgba(138,48,64,0.10);
     }
 
-    .radio-stack,
-    .stack {
-      display: grid;
-      gap: 12px;
+    .remove-item {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 3;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(48,35,29,0.08);
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
     }
+
+    .remove-item:hover { background: rgba(138,48,64,0.18); color: var(--primary); }
+
+    .add-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .add-row .button {
+      min-height: 46px;
+      padding: 0 20px;
+    }
+
+    .link-button {
+      justify-self: start;
+      background: none;
+      border: 0;
+      padding: 0;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .new-category {
+      border-top: 1px solid #efe1d6;
+      padding-top: 18px;
+      margin-top: 18px;
+    }
+
+    .new-category h2 { font-size: 26px; margin-bottom: 12px; }
 
     .field-grid {
       display: grid;
@@ -265,6 +306,7 @@
     input[type="email"],
     input[type="tel"],
     input[type="number"],
+    input[type="date"],
     textarea,
     select {
       width: 100%;
@@ -284,6 +326,8 @@
     .summary-card {
       position: sticky;
       top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
     }
 
     .summary-box {
@@ -303,6 +347,15 @@
       margin: 8px 0;
       color: var(--muted);
     }
+
+    .summary-box li.sum-cat {
+      list-style: none;
+      margin-left: -18px;
+      color: var(--text);
+    }
+
+    .summary-box li.sum-cat > ul { margin-top: 4px; }
+    .summary-box li.sum-cat li { margin: 4px 0; color: var(--muted); }
 
     .actions {
       display: grid;
@@ -347,16 +400,162 @@
       margin-top: 12px;
     }
 
+    /* ---------- Preventivo ---------- */
+    .doc[hidden] { display: none; }
+
+    .doc {
+      margin-top: 28px;
+      padding: 40px;
+    }
+
+    .doc-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+    }
+
+    .doc-toolbar .button { min-height: 44px; }
+
+    .doc-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-head .brand { margin-bottom: 0; }
+
+    .doc-contact {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .doc-title {
+      font-size: 48px;
+      margin: 28px 0 6px;
+    }
+
+    .doc-date { margin: 0 0 22px; color: var(--muted); font-size: 14px; }
+
+    .doc-recipient { margin-bottom: 14px; }
+
+    .doc-meta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 18px;
+      margin: 14px 0 26px;
+      font-size: 14px;
+    }
+
+    .doc-meta dt { font-weight: 700; }
+    .doc-meta dd { margin: 0; color: var(--muted); }
+
+    .doc-cat {
+      border-top: 1px solid #efe1d6;
+      padding: 16px 0;
+      break-inside: avoid;
+    }
+
+    .doc-cat-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .doc-cat h3 { font-size: 28px; }
+
+    .doc-cat ul { margin: 10px 0 0; padding-left: 20px; }
+    .doc-cat li { margin: 3px 0; }
+
+    .amount-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input.amount {
+      width: 150px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .doc-total {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      border-top: 2px solid var(--text);
+      padding-top: 14px;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+
+    .doc-block { margin-top: 26px; break-inside: avoid; }
+    .doc-block h3 { font-size: 26px; margin-bottom: 8px; }
+    .doc-block p { margin: 0; }
+
+    .doc-conditions {
+      font-size: 13px;
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 4px 6px;
+    }
+
+    .doc-conditions:focus { outline: 1px dashed var(--border); }
+    .doc-conditions ul { margin: 0; padding-left: 18px; }
+    .doc-conditions li { margin: 4px 0; }
+
+    .doc-sign {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 38px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .doc-sign div { border-top: 1px solid var(--text); padding-top: 6px; }
+
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
-      .summary-card { position: static; }
+      .summary-card { position: static; max-height: none; }
     }
 
     @media (max-width: 720px) {
       .page { width: min(100% - 20px, 1200px); }
       .hero, .panel { padding: 18px; }
+      .doc { padding: 20px; }
       .option-grid, .field-grid { grid-template-columns: 1fr; }
+      .add-row { grid-template-columns: 1fr; }
+      .doc-contact { text-align: left; }
+      .doc-sign { grid-template-columns: 1fr; }
       h1 { max-width: 100%; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .hero, .layout, .no-print { display: none !important; }
+      .page { width: 100%; padding: 0; }
+      .doc { box-shadow: none; border: 0; padding: 0; margin: 0; background: #fff; }
+      input.amount {
+        border: 0;
+        border-bottom: 1px solid #000;
+        border-radius: 0;
+        background: transparent;
+        padding: 4px 0;
+      }
+      .doc-conditions:focus { outline: none; }
     }
   </style>
 </head>
@@ -374,17 +573,19 @@
         La Tenuta di Bacco
       </a>
       <h1>Configuratore per richieste evento.</h1>
-      
+      <p class="lead">Scegli categorie e proposte, aggiungi voci personalizzate e genera il preventivo. Gli importi restano da compilare a mano.</p>
+
       <div class="hero-badges">
         <span class="badge">Invio su WhatsApp</span>
+        <span class="badge">Preventivo stampabile</span>
       </div>
     </section>
 
     <div class="layout">
-      <form class="panel" id="configuratorForm">
+      <form class="panel" id="configuratorForm" novalidate>
         <details class="section" open>
           <summary><h2>Dati cliente</h2></summary>
-          
+
           <div class="field-grid">
             <div class="field">
               <label for="name">Nome e cognome</label>
@@ -406,8 +607,15 @@
                 <option>Battesimo</option>
                 <option>Comunione</option>
                 <option>Cresima</option>
-                <option>Evento aziendale</option>
+                <option>Diciottesimo</option>
                 <option>Compleanno</option>
+                <option>Festa in piscina</option>
+                <option>Capodanno</option>
+                <option>Pasqua</option>
+                <option>Gender reveal</option>
+                <option>Proposta di matrimonio</option>
+                <option>Addio al nubilato / celibato</option>
+                <option>Evento aziendale</option>
                 <option>Evento privato</option>
                 <option>Altro</option>
               </select>
@@ -423,102 +631,8 @@
           </div>
         </details>
 
-        <details class="section">
-          <summary><h2>Aperitivo e buffet</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="ap-buffet" type="checkbox" name="selections" value="Gran buffet di aperitivi e antipasti" checked><label for="ap-buffet"><strong>Gran buffet di aperitivi e antipasti</strong><span>Formula completa buffet iniziale.</span></label></div>
-            <div class="option"><input id="ap-finger" type="checkbox" name="selections" value="Finger food assortiti"><label for="ap-finger"><strong>Finger food assortiti</strong><span>Croissant farciti, tartellette, focaccia gourmet, mini bun, tramezzini, pizza gourmet e proposte simili.</span></label></div>
-            <div class="option"><input id="ap-salumi" type="checkbox" name="selections" value="Selezione salumi della cantina"><label for="ap-salumi"><strong>Selezione salumi</strong><span>Tagliere rustico, coppa, culatello, crudo e altre selezioni stagionate.</span></label></div>
-            <div class="option"><input id="ap-formaggi" type="checkbox" name="selections" value="Selezione formaggi"><label for="ap-formaggi"><strong>Selezione formaggi</strong><span>Grana Padano, caciotta, mozzarella di bufala, treccia e abbinamenti.</span></label></div>
-            <div class="option"><input id="ap-pane" type="checkbox" name="selections" value="Cesto del fornaio"><label for="ap-pane"><strong>Cesto del fornaio</strong><span>Grissini, focaccia all'olio e rosmarino, pane e francesini.</span></label></div>
-            <div class="option"><input id="ap-pesce" type="checkbox" name="selections" value="Isola del pescatore"><label for="ap-pesce"><strong>Isola del pescatore</strong><span>Tataki di tonno, salmone marinato, pesce spada, ostriche e crudi di mare.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Proposte speciali buffet</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="sp-farro" type="checkbox" name="selections" value="Insalatina di farro, seppioline e basilico"><label for="sp-farro"><strong>Farro e seppioline</strong><span>Proposta fresca da buffet.</span></label></div>
-            <div class="option"><input id="sp-bruschette" type="checkbox" name="selections" value="Bruschettine mignon ai pomodorini"><label for="sp-bruschette"><strong>Bruschettine mignon</strong><span>Versione classica aperitivo.</span></label></div>
-            <div class="option"><input id="sp-gazpacho" type="checkbox" name="selections" value="Gazpacho e pomo confit"><label for="sp-gazpacho"><strong>Gazpacho e pomo confit</strong><span>Variante fresca e leggera.</span></label></div>
-            <div class="option"><input id="sp-hummus" type="checkbox" name="selections" value="Hummus e carotine croccanti"><label for="sp-hummus"><strong>Hummus e carotine</strong><span>Opzione vegetariana.</span></label></div>
-            <div class="option"><input id="sp-baccala" type="checkbox" name="selections" value="Baccalà mantecato olive e capperi"><label for="sp-baccala"><strong>Baccalà mantecato</strong><span>Proposta gourmet di pesce.</span></label></div>
-            <div class="option"><input id="sp-riso" type="checkbox" name="selections" value="Riso venere con gamberetti e zucchine"><label for="sp-riso"><strong>Riso venere con gamberetti</strong><span>Monoporzione fredda da buffet.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Primi piatti</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="pr-tortelli" type="checkbox" name="selections" value="Tortelli piacentini"><label for="pr-tortelli"><strong>Tortelli piacentini</strong><span>Classico del territorio.</span></label></div>
-            <div class="option"><input id="pr-risotto-culatello" type="checkbox" name="selections" value="Risotto con crumble di culatello"><label for="pr-risotto-culatello"><strong>Risotto con crumble di culatello</strong><span>Presente in più proposte.</span></label></div>
-            <div class="option"><input id="pr-risotto-anatra" type="checkbox" name="selections" value="Risotto alla parmigiana e ragù d'anatra"><label for="pr-risotto-anatra"><strong>Risotto alla parmigiana e ragù d'anatra</strong><span>Formula pranzo/cerimonia.</span></label></div>
-            <div class="option"><input id="pr-gnocco" type="checkbox" name="selections" value="Gnocco alla puttanesca con tonno a crudo"><label for="pr-gnocco"><strong>Gnocco alla puttanesca con tonno a crudo</strong><span>Proposta più creativa.</span></label></div>
-            <div class="option"><input id="pr-pacchero" type="checkbox" name="selections" value="Pacchero ai 3 pomodori burrata e basilico"><label for="pr-pacchero"><strong>Pacchero ai 3 pomodori</strong><span>Con burrata e basilico.</span></label></div>
-            <div class="option"><input id="pr-lasagne" type="checkbox" name="selections" value="Lasagne"><label for="pr-lasagne"><strong>Lasagne</strong><span>Proposta informale o aziendale.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Secondi e servizio al tavolo</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="se-tataki" type="checkbox" name="selections" value="Tataki di salmone con zucchine e mandorle"><label for="se-tataki"><strong>Tataki di salmone</strong><span>Con zucchine e mandorle croccanti.</span></label></div>
-            <div class="option"><input id="se-vitello" type="checkbox" name="selections" value="Vitello tonnato"><label for="se-vitello"><strong>Vitello tonnato</strong><span>Secondo classico.</span></label></div>
-            <div class="option"><input id="se-ribs" type="checkbox" name="selections" value="Ribs di maiale al barbecue"><label for="se-ribs"><strong>Ribs di maiale al barbecue</strong><span>Proposta più conviviale.</span></label></div>
-            <div class="option"><input id="se-filetto" type="checkbox" name="selections" value="Filetto di maiale con patate e verdure al forno"><label for="se-filetto"><strong>Filetto di maiale</strong><span>Con patate e verdure al forno.</span></label></div>
-            <div class="option"><input id="se-2primi" type="checkbox" name="selections" value="Due primi a scelta"><label for="se-2primi"><strong>Due primi a scelta</strong><span>Formula completa servita al tavolo.</span></label></div>
-            <div class="option"><input id="se-secondo" type="checkbox" name="selections" value="Un secondo con contorno a scelta"><label for="se-secondo"><strong>Un secondo con contorno</strong><span>Da definire in fase di preventivo.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Dessert, torta e beverage</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="de-dolci" type="checkbox" name="selections" value="Buffet dei dolci e frutta"><label for="de-dolci"><strong>Buffet dolci e frutta</strong><span>Frutta sul ghiaccio, bignè, crostatine e dolci assortiti.</span></label></div>
-            <div class="option"><input id="de-torta" type="checkbox" name="selections" value="Torta evento"><label for="de-torta"><strong>Torta evento</strong><span>Nuziale o personalizzata.</span></label></div>
-            <div class="option"><input id="de-vini" type="checkbox" name="selections" value="Vini a tavola Poggiarello"><label for="de-vini"><strong>Vini a tavola</strong><span>Ortrugo, Gutturnio frizzante, Gutturnio fermo.</span></label></div>
-            <div class="option"><input id="de-spritz" type="checkbox" name="selections" value="Caraffe di spritz"><label for="de-spritz"><strong>Caraffe di spritz</strong><span>Ricorrenti nelle formule aperitivo.</span></label></div>
-            <div class="option"><input id="de-birra" type="checkbox" name="selections" value="Birra alla spina"><label for="de-birra"><strong>Birra alla spina</strong><span>Presente in eventi più informali.</span></label></div>
-            <div class="option"><input id="de-openbar" type="checkbox" name="selections" value="Open bar"><label for="de-openbar"><strong>Open bar</strong><span>Con possibilità di stuzzichini a bordo piscina.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Allestimento e mise en place</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="al-buffet" type="checkbox" name="selections" value="Allestimento buffet in argenteria, ceramica, vetro e legno"><label for="al-buffet"><strong>Allestimento buffet premium</strong><span>Argenteria, ceramica, vetro e legno.</span></label></div>
-            <div class="option"><input id="al-mono" type="checkbox" name="selections" value="Finger food in monoporzioni ceramica e vetro"><label for="al-mono"><strong>Monoporzioni premium</strong><span>Finger serviti in ceramica e vetro.</span></label></div>
-            <div class="option"><input id="al-tavoli" type="checkbox" name="selections" value="Tavoli rotondi"><label for="al-tavoli"><strong>Tavoli rotondi</strong><span>Configurazione banqueting ricorrente.</span></label></div>
-            <div class="option"><input id="al-tovaglie" type="checkbox" name="selections" value="Tovagliato bianco o avorio"><label for="al-tovaglie"><strong>Tovagliato bianco o avorio</strong><span>Con possibilità di gestione cliente o location.</span></label></div>
-            <div class="option"><input id="al-calici" type="checkbox" name="selections" value="Calici e tumblers"><label for="al-calici"><strong>Calici e tumblers</strong><span>Cristallo soffiato o policarbonato a seconda del setup.</span></label></div>
-            <div class="option"><input id="al-posate" type="checkbox" name="selections" value="Posateria e tovaglioli"><label for="al-posate"><strong>Posateria e tovaglioli</strong><span>Mise en place base evento.</span></label></div>
-            <div class="option"><input id="al-sedie-chiavari" type="checkbox" name="selections" value="Sedie chiavarina con cuscino"><label for="al-sedie-chiavari"><strong>Chiavarina con cuscino</strong><span>Soluzione classica cerimonia.</span></label></div>
-            <div class="option"><input id="al-sedie-queen" type="checkbox" name="selections" value="Sedie Queen Pedrali"><label for="al-sedie-queen"><strong>Sedie Queen Pedrali</strong><span>Setup più elegante/moderno.</span></label></div>
-            <div class="option"><input id="al-sedie-pvc" type="checkbox" name="selections" value="Sedie Pedrali in PVC"><label for="al-sedie-pvc"><strong>Sedie Pedrali PVC</strong><span>Soluzione più pratica da evento.</span></label></div>
-            <div class="option"><input id="al-sottopiatti" type="checkbox" name="selections" value="Sottopiatti a scelta"><label for="al-sottopiatti"><strong>Sottopiatti a scelta</strong><span>Pink Kaleido, Midollino sbiancato o altre opzioni.</span></label></div>
-            <div class="option"><input id="al-luxury" type="checkbox" name="selections" value="Piatti luxury"><label for="al-luxury"><strong>Piatti luxury</strong><span>Per aperitivo, dessert o pasta bowl.</span></label></div>
-            <div class="option"><input id="al-personale" type="checkbox" name="selections" value="Personale di servizio"><label for="al-personale"><strong>Personale di servizio</strong><span>Barman, camerieri, cuochi o staff dedicato.</span></label></div>
-          </div>
-        </details>
-
-        <details class="section">
-          <summary><h2>Spazi e servizi extra</h2></summary>
-          
-          <div class="option-grid">
-            <div class="option"><input id="ex-piscina" type="checkbox" name="selections" value="Accesso piscina"><label for="ex-piscina"><strong>Accesso piscina</strong><span>Per aperitivo o momento dedicato.</span></label></div>
-            <div class="option"><input id="ex-sala" type="checkbox" name="selections" value="Sala in esclusiva"><label for="ex-sala"><strong>Sala in esclusiva</strong><span>Per meeting, evento o pranzo/cena riservata.</span></label></div>
-            <div class="option"><input id="ex-location" type="checkbox" name="selections" value="Location in esclusiva"><label for="ex-location"><strong>Location in esclusiva</strong><span>Parco, piscina, chioschi e saloni interni.</span></label></div>
-            <div class="option"><input id="ex-menu-bimbi" type="checkbox" name="selections" value="Menu bimbi"><label for="ex-menu-bimbi"><strong>Menu bimbi</strong><span>Aperitivi buffet più pasta al pomodoro e cotoletta con patatine.</span></label></div>
-            <div class="option"><input id="ex-dj" type="checkbox" name="selections" value="DJ"><label for="ex-dj"><strong>DJ</strong><span>Intrattenimento musicale.</span></label></div>
-            <div class="option"><input id="ex-siae" type="checkbox" name="selections" value="SIAE"><label for="ex-siae"><strong>SIAE</strong><span>Gestione autorizzazioni musicali.</span></label></div>
-          </div>
-        </details>
+        <!-- Categorie e proposte: generate da JavaScript (vedi CATEGORIES) -->
+        <div id="sections"></div>
 
         <details class="section">
           <summary><h2>Date e altre richieste</h2></summary>
@@ -545,58 +659,435 @@
             </div>
           </div>
         </details>
+
+        <div class="new-category">
+          <h2>Nuova categoria</h2>
+          <div class="add-row">
+            <input id="newCategoryName" type="text" placeholder="Es. Angolo caffetteria" />
+            <button class="button secondary" id="addCategoryBtn" type="button">Aggiungi categoria</button>
+          </div>
+          <p class="small">Le voci e le categorie aggiunte restano salvate in questo browser.</p>
+        </div>
       </form>
 
       <aside class="panel summary-card">
         <h2>Riepilogo richiesta</h2>
-        
+
         <div class="summary-box" id="summaryBox">
           <ul id="summaryList">
             <li>Nessuna proposta selezionata.</li>
           </ul>
         </div>
         <div class="actions">
-          <button class="button primary" id="sendWhatsapp" type="button">Invia riepilogo su WhatsApp</button>
+          <button class="button primary" id="buildDoc" type="button">Crea preventivo</button>
+          <button class="button secondary" id="sendWhatsapp" type="button">Invia riepilogo su WhatsApp</button>
           <button class="button secondary" id="resetSelections" type="button">Azzera selezioni</button>
         </div>
         <p class="status" id="status"></p>
-        
+
       </aside>
     </div>
+
+    <section class="panel doc" id="preventivo" hidden></section>
   </main>
 
   <script>
     const WHATSAPP_NUMBER = '393339791543';
+    const STORAGE_KEY = 'tdb-custom-v1';
+
+    const LOGO_SVG = '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 6C18.8 13.7 16.2 20.4 16.2 26.2C16.2 33.5 19.9 39 24 39C28.1 39 31.8 33.5 31.8 26.2C31.8 20.4 29.2 13.7 24 6Z" stroke="currentColor" stroke-width="2.4"/><path d="M24 15.5C21 15.5 18.6 17.9 18.6 20.9C18.6 23.9 21 26.3 24 26.3C27 26.3 29.4 23.9 29.4 20.9C29.4 17.9 27 15.5 24 15.5Z" stroke="currentColor" stroke-width="2.4"/><path d="M24 26.3V42" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+
+    /* ------------------------------------------------------------------
+       CATALOGO
+       Ogni categoria ha un id, un titolo e un elenco di voci:
+       [titolo, descrizione, preselezionata?]
+       Nessun prezzo: gli importi si compilano a mano nel preventivo.
+       ------------------------------------------------------------------ */
+    const CATEGORIES = [
+      { id: 'aperitivo', title: 'Aperitivo e buffet', items: [
+        ['Gran buffet di aperitivi e antipasti', 'Formula completa buffet iniziale.', true],
+        ['Finger food assortiti', 'Croissant farciti, tartellette, focaccia gourmet, mini bun, tramezzini, pizza gourmet e proposte simili.'],
+        ['Selezione salumi della cantina', 'Tagliere rustico, coppa, culatello, crudo e altre selezioni stagionate.'],
+        ['Selezione formaggi', 'Grana Padano, caciotta, mozzarella di bufala, treccia e abbinamenti.'],
+        ['Cesto del fornaio', "Grissini, focaccia all'olio e rosmarino, pane e francesini."],
+        ['Isola del pescatore', 'Tataki di tonno, salmone marinato, pesce spada, ostriche e crudi di mare.']
+      ]},
+      { id: 'finger', title: 'Finger food e stuzzicherie', items: [
+        ['Croissant farciti', ''],
+        ['Tartellette farcite', ''],
+        ['Focaccia gourmet con mortadella Capitelli', ''],
+        ['Spiedini di caprese', ''],
+        ['Vol au vent al salmone', ''],
+        ['Pizza gourmet', ''],
+        ['Pizzette dello chef', ''],
+        ['Cuoppo misto', "Arancino, olive all'ascolana, mozzarelline."],
+        ["Olive all'ascolana", ''],
+        ['Mozzarelline impanate', ''],
+        ['Mini bun farciti', ''],
+        ['Tramezzini gourmet', ''],
+        ['Cornetti salati con mousse di Philadelphia alle erbe aromatiche', ''],
+        ['Mini cestini di pasta frolla alla contadina', ''],
+        ['Sfoglie agli spinaci e formaggio', ''],
+        ['Verdure in pastella', ''],
+        ['Polpette di cous cous', ''],
+        ['Torte salate', ''],
+        ['Brioches salate farcite', ''],
+        ['Gnocco fritto (a vista)', 'Servito al momento.'],
+        ['Frittelle di fiori di zucca', ''],
+        ['Croquetas de jamón', ''],
+        ['Polpette della nonna', ''],
+        ['Mini battuta di fassona con fonduta di parmigiano', ''],
+        ['Pane, burro e acciughe', ''],
+        ['Pinsa', ''],
+        ['Giardiniera', '']
+      ]},
+      { id: 'salumi', title: 'I salumi della nostra cantina', items: [
+        ['Tagliere rustico con salame a grana grossa', ''],
+        ['Coppa stagionata della collina piacentina', ''],
+        ['Crudo di Parma 24 mesi', ''],
+        ['Salame piacentino stagionato', ''],
+        ['Coppa piacentina di lunga stagionatura', ''],
+        ['Culatello 12 mesi', ''],
+        ['Pancetta campagnola stagionata 18 mesi', '']
+      ]},
+      { id: 'formaggi', title: 'La selezione dei formaggi', items: [
+        ['Grana Padano 24 mesi', 'Anche a scaglie.'],
+        ['Caciotta nostrana di mucca', ''],
+        ['Gorgonzola dolce', ''],
+        ['Bocconcini di bufala fresca', ''],
+        ['Treccia di mozzarella campana', ''],
+        ['Confetture km 0, miele e mostarda', 'Abbinamenti per i formaggi.'],
+        ['Antipasto accompagnato da gnocco fritto', '']
+      ]},
+      { id: 'pane', title: "L'angolo del pane", items: [
+        ['Grissini malfatti', ''],
+        ["Focaccia all'olio EVO e rosmarino", ''],
+        ['Francesini', ''],
+        ['Pane carasau', ''],
+        ['Pane casereccio', '']
+      ]},
+      { id: 'speciali', title: 'Proposte speciali buffet', items: [
+        ['Insalatina di farro, seppioline e basilico', 'Proposta fresca da buffet.'],
+        ['Bruschettine mignon ai pomodorini', 'Versione classica aperitivo.'],
+        ['Gazpacho e pomo confit', 'Variante fresca e leggera.'],
+        ['Hummus e carotine croccanti', 'Opzione vegetariana.'],
+        ['Baccalà mantecato olive e capperi', 'Proposta gourmet di pesce.'],
+        ['Riso venere con gamberetti e zucchine', 'Monoporzione fredda da buffet.'],
+        ['Croccante di pane con fiordilatte, salmone e cime di finocchio', '']
+      ]},
+      { id: 'brunch', title: 'Brunch e coffee break', items: [
+        ['Brunch', "Pizzette dello chef, olive all'ascolana, mozzarelline impanate, tagliere rustico e cesto del fornaio."],
+        ['Aperitivo pomeridiano', 'Salumi della cantina, selezione di formaggi e brioches salate farcite.'],
+        ['Coffee break mattutino', "Caffè espresso, latte, succo d'arancia e ananas, acque minerali, biscotteria secca e brioches mignon."],
+        ['Coffee break completo', 'Bevande vegetali di riso e soia, yogurt, succhi, frutta, pizzette, tramezzini gourmet e brioches salate.'],
+        ['Prodotti per celiaci', '']
+      ]},
+      { id: 'primi', title: 'Primi piatti', items: [
+        ['Tortelli piacentini', 'Classico del territorio.'],
+        ['Risotto con crumble di culatello', 'Presente in più proposte.'],
+        ["Risotto alla parmigiana e ragù d'anatra", 'Formula pranzo/cerimonia.'],
+        ['Gnocco alla puttanesca con tonno a crudo', 'Proposta più creativa.'],
+        ['Pacchero ai 3 pomodori burrata e basilico', 'Con burrata e basilico.'],
+        ['Lasagne', 'Proposta informale o aziendale.'],
+        ['Tortelli di ricotta e spinaci', ''],
+        ['Anolini in brodo di terza', ''],
+        ['Pisarei e fasoi', 'Tradizione piacentina.'],
+        ['Tortelli con la coda fatti in casa', 'Burro e salvia, con sugo ai porcini a parte.'],
+        ['Fagottino di zucca e ricotta', 'Su letto di zola dolce e profumo di tartufo.'],
+        ['Ravioli al ragù di vitello', 'Con ridotto al brasato e pecorino.'],
+        ['Paccheri al sughetto di ombrina', ''],
+        ['Gnocchetti alla norma dello chef', ''],
+        ['Gnocchetti della casa al ragù di anatra', 'Con pecorino e basilico fresco.'],
+        ['Cannelloni ripieni ai funghi', 'Con fonduta di pomodoro e basilico.'],
+        ['Crespelline con ricotta di bufala', 'Zucchine e cuore di taleggio cremoso.'],
+        ['Tagliolini fatti in casa ai porcini', 'Profumo di pepe nero, olio EVO e prezzemolo fresco.'],
+        ['Ravioli ripieni al branzino', 'Con riduzione al basilico e nocciole tostate.'],
+        ['Risotto mantecato alla zucca bertina', 'Quenelle di fiordilatte e salvia fritta.'],
+        ['Risotto alla barbabietola rossa', 'Fiordilatte e granella di pistacchio di Bronte.'],
+        ['Risotto alle punte di asparago', 'Mantecato al parmigiano 36 mesi con mandorle tostate.'],
+        ['Risotto con pesto di basilico e burratina', 'Concassé di pomodorini.'],
+        ['Risotto al Grana Padano 24 mesi', 'Con animelle e riduzione di Gutturnio.'],
+        ['Risotto ai funghi porcini', 'Dalle nostre colline.'],
+        ['Risotto ai fiori di zucca', ''],
+        ['Risotto al radicchio rosso', 'Parmigiano stagionato e riccioli di culatello tostati.'],
+        ['Risotto allo zafferano', '']
+      ]},
+      { id: 'secondi', title: 'Secondi e servizio al tavolo', items: [
+        ['Tataki di salmone con zucchine e mandorle', 'Con zucchine e mandorle croccanti.'],
+        ['Vitello tonnato', 'Secondo classico.'],
+        ['Ribs di maiale al barbecue', 'Proposta più conviviale.'],
+        ['Filetto di maiale con patate e verdure al forno', 'Con patate e verdure al forno.'],
+        ['Due primi a scelta', 'Formula completa servita al tavolo.'],
+        ['Un secondo con contorno a scelta', 'Da definire in fase di preventivo.'],
+        ['Coppa arrosto con patate', ''],
+        ['Filetto di maialino avvolto nel bacon affumicato', 'Con la sua salsa.'],
+        ['Faraona disossata e ripiena', 'Accompagnata da verdure al salto.'],
+        ['Tagliata di manzo', 'Purea di patate allo zola dolce e salsa al Gutturnio.'],
+        ['Merluzzo al forno', 'Melanzana affumicata e marmellata di cipolle rosse.'],
+        ['Stinco a bassa temperatura', 'Al profumo di rosmarino.'],
+        ['Salmone alla piastra', 'Verdure al forno e salsa verde.'],
+        ['Antipasto di salumi e formaggi con gnocco fritto', 'Servito al tavolo.'],
+        ['Servizio al tavolo', '']
+      ]},
+      { id: 'dolci', title: 'Dessert e torta', items: [
+        ['Buffet dei dolci e frutta', 'Frutta sul ghiaccio, bignè, crostatine e dolci assortiti.'],
+        ['Torta evento', 'Nuziale o personalizzata.'],
+        ['Panettone con crema al mascarpone', ''],
+        ['Torta millefoglie', 'Crema pasticcera e crema chantilly.'],
+        ['Frutta di stagione', ''],
+        ['Frutta tagliata sul ghiaccio', ''],
+        ['Gusci di cioccolato fondente', 'Ripieni alla crema e velati al cacao.'],
+        ['Crostatine alla crema chantilly', 'Con frutti di bosco e/o fragole.'],
+        ['Quadrotti di crostata alle marmellate km 0', ''],
+        ['Bignè alla crema pasticcera e al cioccolato', ''],
+        ['Caffè e amari tradizionali', '']
+      ]},
+      { id: 'beverage', title: 'Beverage', items: [
+        ['Vini a tavola Poggiarello', 'Ortrugo, Gutturnio frizzante, Gutturnio fermo.'],
+        ['Caraffe di spritz', 'Ricorrenti nelle formule aperitivo.'],
+        ['Birra alla spina', 'Presente in eventi più informali.'],
+        ['Open bar', 'Con possibilità di stuzzichini a bordo piscina.'],
+        ['Spumante bollicine millesimato brut', ''],
+        ['Vino della cantina locale piacentina', 'Spumante, bianco fermo e rosso.'],
+        ['Long drink analcolico alla frutta di stagione', ''],
+        ['Bibite analcoliche', ''],
+        ['Acque minerali', 'Naturale e gasata.'],
+        ['Buvette con postazione cocktail', '']
+      ]},
+      { id: 'allestimento', title: 'Allestimento e mise en place', items: [
+        ['Allestimento buffet in argenteria, ceramica, vetro e legno', 'Argenteria, ceramica, vetro e legno.'],
+        ['Finger food in monoporzioni ceramica e vetro', 'Finger serviti in ceramica e vetro.'],
+        ['Tavoli rotondi', 'Configurazione banqueting ricorrente.'],
+        ['Tavoli quadrati', 'Con tovagliato grigio tortora.'],
+        ['Tavoli mangia in piedi', ''],
+        ['Tovagliato bianco o avorio', 'Con possibilità di gestione cliente o location.'],
+        ['Calici e tumblers', 'Cristallo soffiato o policarbonato a seconda del setup.'],
+        ['Posateria e tovaglioli', 'Mise en place base evento.'],
+        ['Stoviglie monouso', 'Piattini, tovaglioli, posate e bicchieri.'],
+        ['Sedie chiavarina con cuscino', 'Soluzione classica cerimonia.'],
+        ['Sedie Queen Pedrali', 'Setup più elegante/moderno.'],
+        ['Sedie Pedrali in PVC', 'Soluzione più pratica da evento.'],
+        ['Sottopiatti a scelta', 'Pink Kaleido, Midollino sbiancato o altre opzioni.'],
+        ['Piatti luxury', 'Per aperitivo, dessert o pasta bowl.'],
+        ['Personale di servizio', 'Barman, camerieri, cuochi o staff dedicato.']
+      ]},
+      { id: 'servizi', title: 'Spazi e servizi extra', items: [
+        ['Accesso piscina', 'Per aperitivo o momento dedicato, con bagnino.'],
+        ['Sala in esclusiva', 'Per meeting, evento o pranzo/cena riservata.'],
+        ['Location in esclusiva', 'Parco, piscina, chioschi e saloni interni.'],
+        ['Menu bimbi', 'Aperitivi buffet più pasta al pomodoro e cotoletta con patatine.'],
+        ['DJ', 'Intrattenimento musicale.'],
+        ['SIAE', 'Gestione autorizzazioni musicali.'],
+        ['Servizio musica dal vivo', 'Musicisti dal vivo per cerimonia, aperitivo o serata.'],
+        ['Shooting fotografico', "Servizio fotografico dell'evento."],
+        ['Video evento', 'Riprese e video racconto della giornata.'],
+        ['Prova menu', ''],
+        ['Catering fuori sede', 'Servizio presso altra location, con trasferta e alloggio dello staff.']
+      ]}
+    ];
+
+    /* ------------------------------------------------------------------ */
+
     const form = document.getElementById('configuratorForm');
+    const sectionsEl = document.getElementById('sections');
     const summaryList = document.getElementById('summaryList');
-    const status = document.getElementById('status');
+    const statusEl = document.getElementById('status');
     const sendBtn = document.getElementById('sendWhatsapp');
     const resetBtn = document.getElementById('resetSelections');
+    const buildBtn = document.getElementById('buildDoc');
+    const docEl = document.getElementById('preventivo');
+    const newCategoryName = document.getElementById('newCategoryName');
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
 
-    function getSelections() {
-      return Array.from(document.querySelectorAll('input[name="selections"]:checked')).map(el => el.value);
+    /* ----- voci e categorie personalizzate (salvate nel browser) ----- */
+    let custom = { items: {}, categories: [] };
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          custom.items = parsed.items && typeof parsed.items === 'object' ? parsed.items : {};
+          custom.categories = Array.isArray(parsed.categories) ? parsed.categories : [];
+        }
+      }
+    } catch (e) { /* storage non disponibile */ }
+
+    function saveCustom() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(custom)); } catch (e) { /* ignora */ }
+    }
+
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const key = (catId, title) => catId + '::' + title;
+
+    function allCategories() {
+      const base = CATEGORIES.map(c => ({
+        id: c.id,
+        title: c.title,
+        isCustom: false,
+        items: c.items.map(i => ({ t: i[0], d: i[1] || '', checked: !!i[2], custom: false }))
+          .concat((custom.items[c.id] || []).map(t => ({ t, d: '', checked: false, custom: true })))
+      }));
+      const extra = custom.categories.map(c => ({
+        id: c.id,
+        title: c.title,
+        isCustom: true,
+        items: (custom.items[c.id] || []).map(t => ({ t, d: '', checked: false, custom: true }))
+      }));
+      return base.concat(extra);
+    }
+
+    /* ----- stato selezioni ----- */
+    const selected = new Set();
+
+    function applyDefaults() {
+      selected.clear();
+      CATEGORIES.forEach(c => c.items.forEach(i => { if (i[2]) selected.add(key(c.id, i[0])); }));
+    }
+
+    function groupedSelections() {
+      return allCategories()
+        .map(c => ({ id: c.id, title: c.title, items: c.items.filter(i => selected.has(key(c.id, i.t))).map(i => i.t) }))
+        .filter(g => g.items.length);
     }
 
     function safe(value, fallback = 'Non specificato') {
       return value && String(value).trim() ? String(value).trim() : fallback;
     }
 
+    function fmtDate(v) {
+      if (!v) return '';
+      const p = v.split('-');
+      return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : v;
+    }
+
+    function rangeText(a, b) {
+      return [fmtDate(a), fmtDate(b)].filter(Boolean).join(' → ');
+    }
+
+    /* ----- rendering delle categorie ----- */
+    function renderSections(forceOpenId) {
+      const open = new Set(Array.from(sectionsEl.querySelectorAll('details[open]')).map(d => d.dataset.cat));
+      if (forceOpenId) open.add(forceOpenId);
+
+      sectionsEl.innerHTML = allCategories().map(cat => {
+        const items = cat.items.map((it, i) => {
+          const id = cat.id + '-' + i;
+          return '<div class="option">' +
+            '<input id="' + esc(id) + '" type="checkbox" name="selections" data-cat="' + esc(cat.id) + '" value="' + esc(it.t) + '"' + (selected.has(key(cat.id, it.t)) ? ' checked' : '') + '>' +
+            '<label for="' + esc(id) + '"><strong>' + esc(it.t) + '</strong>' + (it.d ? '<span>' + esc(it.d) + '</span>' : '') + '</label>' +
+            (it.custom ? '<button type="button" class="remove-item" data-remove-item="' + esc(cat.id) + '" data-title="' + esc(it.t) + '" aria-label="Rimuovi ' + esc(it.t) + '">×</button>' : '') +
+            '</div>';
+        }).join('');
+
+        return '<details class="section" data-cat="' + esc(cat.id) + '"' + (open.has(cat.id) ? ' open' : '') + '>' +
+          '<summary><h2>' + esc(cat.title) + '</h2></summary>' +
+          (items ? '<div class="option-grid">' + items + '</div>' : '<p class="small">Nessuna voce: aggiungine una qui sotto.</p>') +
+          '<div class="add-row">' +
+            '<input type="text" data-add="' + esc(cat.id) + '" placeholder="Aggiungi una voce a «' + esc(cat.title) + '»">' +
+            '<button type="button" class="button secondary" data-add-btn="' + esc(cat.id) + '">Aggiungi</button>' +
+          '</div>' +
+          (cat.isCustom ? '<button type="button" class="link-button" data-remove-cat="' + esc(cat.id) + '">Rimuovi questa categoria</button>' : '') +
+          '</details>';
+      }).join('');
+    }
+
     function renderSummary() {
-      const selections = getSelections();
+      const groups = groupedSelections();
       summaryList.innerHTML = '';
-      if (!selections.length) {
+      if (!groups.length) {
         summaryList.innerHTML = '<li>Nessuna proposta selezionata.</li>';
         return;
       }
-      selections.forEach(item => {
+      groups.forEach(g => {
         const li = document.createElement('li');
-        li.textContent = item;
+        li.className = 'sum-cat';
+        li.innerHTML = '<strong>' + esc(g.title) + '</strong><ul>' + g.items.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>';
         summaryList.appendChild(li);
       });
     }
 
+    /* ----- aggiunta / rimozione voci e categorie ----- */
+    function addItem(catId) {
+      const input = sectionsEl.querySelector('input[data-add="' + catId + '"]');
+      if (!input) return;
+      const title = input.value.trim();
+      if (!title) return;
+      const cat = allCategories().find(c => c.id === catId);
+      if (!cat) return;
+      if (!cat.items.some(i => i.t.toLowerCase() === title.toLowerCase())) {
+        custom.items[catId] = (custom.items[catId] || []).concat(title);
+        saveCustom();
+      }
+      const existing = cat.items.find(i => i.t.toLowerCase() === title.toLowerCase());
+      selected.add(key(catId, existing ? existing.t : title));
+      renderSections(catId);
+      renderSummary();
+      const again = sectionsEl.querySelector('input[data-add="' + catId + '"]');
+      if (again) again.focus();
+    }
+
+    function removeItem(catId, title) {
+      custom.items[catId] = (custom.items[catId] || []).filter(t => t !== title);
+      selected.delete(key(catId, title));
+      saveCustom();
+      renderSections();
+      renderSummary();
+    }
+
+    function addCategory() {
+      const title = newCategoryName.value.trim();
+      if (!title) return;
+      const id = 'c' + Date.now().toString(36);
+      custom.categories.push({ id, title });
+      saveCustom();
+      newCategoryName.value = '';
+      renderSections(id);
+      renderSummary();
+      statusEl.textContent = 'Categoria «' + title + '» aggiunta.';
+    }
+
+    function removeCategory(catId) {
+      custom.categories = custom.categories.filter(c => c.id !== catId);
+      (custom.items[catId] || []).forEach(t => selected.delete(key(catId, t)));
+      delete custom.items[catId];
+      saveCustom();
+      renderSections();
+      renderSummary();
+    }
+
+    sectionsEl.addEventListener('change', e => {
+      const el = e.target;
+      if (el.matches('input[type="checkbox"]')) {
+        const k = key(el.dataset.cat, el.value);
+        if (el.checked) selected.add(k); else selected.delete(k);
+        renderSummary();
+      }
+    });
+
+    sectionsEl.addEventListener('click', e => {
+      const addBtn = e.target.closest('[data-add-btn]');
+      if (addBtn) { addItem(addBtn.dataset.addBtn); return; }
+      const rmItem = e.target.closest('[data-remove-item]');
+      if (rmItem) { removeItem(rmItem.dataset.removeItem, rmItem.dataset.title); return; }
+      const rmCat = e.target.closest('[data-remove-cat]');
+      if (rmCat) { removeCategory(rmCat.dataset.removeCat); }
+    });
+
+    sectionsEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.matches('input[data-add]')) {
+        e.preventDefault();
+        addItem(e.target.dataset.add);
+      }
+    });
+
+    addCategoryBtn.addEventListener('click', addCategory);
+    newCategoryName.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); addCategory(); }
+    });
+
+    /* ----- messaggio WhatsApp ----- */
     function buildMessage() {
-      const selections = getSelections();
+      const groups = groupedSelections();
       const lines = [
         'Richiesta configuratore - La Tenuta di Bacco',
         '',
@@ -610,41 +1101,140 @@
         '*Proposte selezionate:*'
       ];
 
-      if (selections.length) {
-        selections.forEach(item => lines.push('- ' + item));
+      if (groups.length) {
+        groups.forEach(g => {
+          lines.push('');
+          lines.push('_' + g.title + '_');
+          g.items.forEach(item => lines.push('- ' + item));
+        });
       } else {
         lines.push('- Nessuna proposta selezionata');
       }
 
       lines.push('');
-      const preferredRange = [form.preferredDateStart.value, form.preferredDateEnd.value].filter(Boolean).join(' → ');
-      const alternativeRange = [form.alternativeDateStart.value, form.alternativeDateEnd.value].filter(Boolean).join(' → ');
-      lines.push('*Periodo preferito:* ' + safe(preferredRange));
-      lines.push('*Periodo alternativo:* ' + safe(alternativeRange));
+      lines.push('*Periodo preferito:* ' + safe(rangeText(form.preferredDateStart.value, form.preferredDateEnd.value)));
+      lines.push('*Periodo alternativo:* ' + safe(rangeText(form.alternativeDateStart.value, form.alternativeDateEnd.value)));
       lines.push('*Richieste personalizzate:* ' + safe(form.customRequests.value));
       return lines.join('\n');
     }
 
-    form.addEventListener('input', renderSummary);
-    form.addEventListener('change', renderSummary);
-
     sendBtn.addEventListener('click', () => {
       if (!form.reportValidity()) {
-        status.textContent = 'Compila prima i campi obbligatori.';
+        statusEl.textContent = 'Compila prima i campi obbligatori.';
         return;
       }
       const text = buildMessage();
       const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(text);
-      status.textContent = 'Apro WhatsApp con il riepilogo compilato...';
+      statusEl.textContent = 'Apro WhatsApp con il riepilogo compilato...';
       window.open(url, '_blank', 'noopener');
     });
 
     resetBtn.addEventListener('click', () => {
       form.reset();
+      applyDefaults();
+      renderSections();
       renderSummary();
-      status.textContent = '';
+      statusEl.textContent = '';
     });
 
+    /* ----- preventivo ----- */
+    const DEFAULT_CONDITIONS =
+      '<ul>' +
+      '<li>È richiesta una caparra del 30% ad accettazione del preventivo.</li>' +
+      "<li>Il saldo dovrà essere effettuato entro la data dell'evento.</li>" +
+      "<li>Eventuali allergie o intolleranze andranno comunicate entro 15 giorni dalla data dell'evento.</li>" +
+      '<li>Se gli ospiti saranno inferiori a ______, il preventivo verrà ricalcolato tenendo conto dei costi fissi invariabili.</li>' +
+      "<li>Il numero definitivo di ospiti, bambini e staff dovrà essere comunicato entro 15 giorni dalla data dell'evento.</li>" +
+      "<li>Per cancellazioni comunicate fino a 30 giorni prima dell'evento verrà trattenuta la caparra confirmatoria.</li>" +
+      "<li>Per cancellazioni comunicate dal 29° giorno prima dell'evento la penale corrisponde al 50% dell'importo totale pattuito.</li>" +
+      '<li>Il servizio di catering termina entro le 00:30; con il servizio open bar il termine è prorogato alle 01:00. Le ore extra saranno conteggiate a parte, a copertura dei costi di staff e logistica.</li>' +
+      '<li>Il vino si intende in ragione di 1 bottiglia ogni 2 ospiti per tipologia; le bottiglie extra saranno addebitate a consuntivo.</li>' +
+      '<li>Il menu può subire variazioni in base alla stagionalità.</li>' +
+      '</ul>';
+
+    let amounts = {};
+    let conditionsHtml = DEFAULT_CONDITIONS;
+
+    function buildDoc() {
+      const groups = groupedSelections();
+      const val = id => document.getElementById(id).value.trim();
+      const today = new Date().toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
+      const eventType = val('eventType');
+      const preferred = rangeText(val('preferredDateStart'), val('preferredDateEnd'));
+      const alternative = rangeText(val('alternativeDateStart'), val('alternativeDateEnd'));
+
+      const meta = [
+        ['Tipologia evento', eventType],
+        ['Numero ospiti', val('guests')],
+        ['Fascia oraria', val('timing')],
+        ['Periodo preferito', preferred],
+        ['Periodo alternativo', alternative]
+      ].filter(r => r[1]);
+
+      const contacts = [val('phone'), val('email')].filter(Boolean).join(' · ');
+
+      const catsHtml = groups.length
+        ? groups.map(g =>
+            '<section class="doc-cat">' +
+              '<div class="doc-cat-head"><h3>' + esc(g.title) + '</h3>' +
+              '<label class="amount-wrap">Importo <input class="amount" type="text" data-key="' + esc(g.id) + '" value="' + esc(amounts[g.id] || '') + '" placeholder="€"></label></div>' +
+              '<ul>' + g.items.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>' +
+            '</section>'
+          ).join('')
+        : '<p class="small">Nessuna proposta selezionata.</p>';
+
+      const requests = val('customRequests');
+
+      docEl.innerHTML =
+        '<div class="doc-toolbar no-print">' +
+          '<button class="button primary" type="button" data-doc="print">Stampa / salva PDF</button>' +
+          '<button class="button secondary" type="button" data-doc="refresh">Aggiorna dalle selezioni</button>' +
+          '<button class="button secondary" type="button" data-doc="close">Chiudi anteprima</button>' +
+        '</div>' +
+        '<div class="doc-head">' +
+          '<div class="brand"><span class="brand-mark" aria-hidden="true">' + LOGO_SVG + '</span>La Tenuta di Bacco</div>' +
+          '<div class="doc-contact">Località Rossia di Gossolengo 16, 29020 Piacenza PC<br>info@latenutadibacco.it · +39 333 979 1543</div>' +
+        '</div>' +
+        '<h2 class="doc-title">Preventivo</h2>' +
+        '<p class="doc-date">Data: ' + esc(today) + '</p>' +
+        '<div class="doc-recipient"><strong>Spett.le</strong> ' + (val('name') ? esc(val('name')) : '______________________') +
+          (contacts ? '<br><span class="small">' + esc(contacts) + '</span>' : '') + '</div>' +
+        '<p><strong>Oggetto:</strong> Preventivo servizio catering' + (eventType ? ' per evento «' + esc(eventType) + '»' : '') + '</p>' +
+        (meta.length ? '<dl class="doc-meta">' + meta.map(r => '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>').join('') + '</dl>' : '') +
+        catsHtml +
+        '<div class="doc-total"><strong>Totale</strong><input class="amount" type="text" data-key="__total" value="' + esc(amounts.__total || '') + '" placeholder="€"></div>' +
+        (requests ? '<div class="doc-block"><h3>Richieste personalizzate</h3><p>' + esc(requests).replace(/\n/g, '<br>') + '</p></div>' : '') +
+        '<div class="doc-block"><h3>Condizioni</h3><div class="doc-conditions" contenteditable="true">' + conditionsHtml + '</div></div>' +
+        '<p class="small">Si prega di comunicare eventuali intolleranze e allergie.</p>' +
+        '<div class="doc-sign"><div>Data</div><div>Firma per accettazione</div></div>';
+
+      docEl.hidden = false;
+    }
+
+    buildBtn.addEventListener('click', () => {
+      buildDoc();
+      docEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      statusEl.textContent = 'Preventivo creato: compila gli importi e stampa o salva in PDF.';
+    });
+
+    docEl.addEventListener('click', e => {
+      const btn = e.target.closest('[data-doc]');
+      if (!btn) return;
+      if (btn.dataset.doc === 'print') window.print();
+      if (btn.dataset.doc === 'refresh') buildDoc();
+      if (btn.dataset.doc === 'close') docEl.hidden = true;
+    });
+
+    docEl.addEventListener('input', e => {
+      if (e.target.classList && e.target.classList.contains('amount')) {
+        amounts[e.target.dataset.key] = e.target.value;
+      }
+      const cond = e.target.closest ? e.target.closest('.doc-conditions') : null;
+      if (cond) conditionsHtml = cond.innerHTML;
+    });
+
+    applyDefaults();
+    renderSections();
     renderSummary();
   </script>
 </body>
