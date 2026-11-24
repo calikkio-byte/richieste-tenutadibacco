@@ -527,6 +527,83 @@
 
     .doc-sign div { border-top: 1px solid var(--text); padding-top: 6px; }
 
+    /* ---------- Pacchetti ---------- */
+    .pkg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .pkg-card { position: relative; }
+    .pkg-card input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    .pkg-card label {
+      display: block;
+      height: 100%;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-top: 8px solid var(--pk);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .pkg-card label strong { display: block; font-family: var(--font-display); font-size: 28px; line-height: 1; margin-bottom: 4px; }
+    .pkg-card label .pkg-price { font-weight: 700; color: var(--pk-dark); font-size: 15px; }
+    .pkg-card label span.pkg-note { display: block; font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .pkg-card input:checked + label { border-color: var(--pk); background: var(--pk-soft); box-shadow: 0 10px 22px rgba(64,36,26,0.12); }
+
+    .pkg-oro { --pk: #b8892b; --pk-soft: #f8efd8; --pk-dark: #7a5a14; --pk-grad: linear-gradient(135deg, #dcb85f 0%, #a67c1e 100%); }
+    .pkg-argento { --pk: #8a949f; --pk-soft: #eef0f3; --pk-dark: #4b535c; --pk-grad: linear-gradient(135deg, #b3bcc6 0%, #6f7a86 100%); }
+    .pkg-platino { --pk: #3f4a5e; --pk-soft: #e6eaf1; --pk-dark: #232b3a; --pk-grad: linear-gradient(135deg, #5f6f8c 0%, #1f2736 100%); }
+
+    .pkg-editor { margin-top: 18px; display: grid; gap: 16px; }
+    .pkg-editor[hidden] { display: none; }
+
+    .pkg-block { background: #fff; border: 1px solid var(--border); border-left: 6px solid var(--pk); border-radius: var(--radius-md); padding: 14px 16px; }
+    .pkg-block h3 { font-size: 24px; margin-bottom: 8px; }
+    .pkg-slot { display: grid; gap: 4px; margin-top: 8px; }
+    .pkg-slot label { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .pkg-slot select { padding: 10px 12px; border-radius: 10px; font-size: 14px; }
+    .pkg-fixed { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+    .pkg-hint { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+    /* preventivo a tema pacchetto */
+    .doc[class*="pkg-"] .doc-title { color: var(--pk-dark); }
+    .doc[class*="pkg-"] .doc-head { border-bottom: 3px solid var(--pk); }
+    .doc[class*="pkg-"] .doc-cat { border-top-color: var(--pk); }
+    .doc[class*="pkg-"] .doc-cat h3 { color: var(--pk-dark); }
+    .doc[class*="pkg-"] .doc-total { border-top-color: var(--pk-dark); }
+
+    .pkg-banner {
+      background: var(--pk-grad);
+      color: #fff;
+      border-radius: 20px;
+      padding: 22px 28px;
+      margin: 8px 0 22px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .pkg-banner small { display: block; letter-spacing: .2em; text-transform: uppercase; font-size: 11px; opacity: .85; }
+    .pkg-banner h2 { font-size: 54px; color: #fff; }
+    .pkg-banner .pkg-banner-price { text-align: right; font-size: 14px; }
+    .pkg-banner .pkg-banner-price strong { display: block; font-family: var(--font-display); font-size: 40px; line-height: 1; }
+
+    .doc-extras { margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: var(--pk-soft); font-size: 14px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc-extras ul { margin: 6px 0 0; padding-left: 20px; }
+
+    @media (max-width: 720px) {
+      .pkg-grid { grid-template-columns: 1fr; }
+      .pkg-banner .pkg-banner-price { text-align: left; }
+    }
+
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
       .summary-card { position: static; max-height: none; }
@@ -629,6 +706,13 @@
               <input id="timing" name="timing" type="text" placeholder="Es. pranzo, cena, aperitivo serale" />
             </div>
           </div>
+        </details>
+
+        <!-- Pacchetti Oro / Argento / Platino: generati da JavaScript (vedi PACKAGES) -->
+        <details class="section" id="packageSection" open>
+          <summary><h2>Pacchetto</h2></summary>
+          <p class="small">Scegli un pacchetto: le voci sono già impostate e puoi sostituirle una per una con altre proposte del catalogo. Il numero di voci non cambia.</p>
+          <div id="packageBox"></div>
         </details>
 
         <!-- Categorie e proposte: generate da JavaScript (vedi CATEGORIES) -->
@@ -886,6 +970,62 @@
       ]}
     ];
 
+    /* ------------------------------------------------------------------
+       PACCHETTI
+       Ogni pacchetto è una sequenza di blocchi:
+       - kind 'slots': voci sostituibili (stesso numero, scelta tra le voci
+         del catalogo indicate in `cats` + quella di default)
+       - kind 'fixed': righe fisse non modificabili
+       ------------------------------------------------------------------ */
+    const NO_GENERIC = /a scelta|servizio al tavolo|^antipasto/i;
+
+    function pkgBlocks(opts) {
+      const b = [];
+      b.push({ id: 'aper', title: 'Gran buffet di aperitivi e antipasti', kind: 'slots', cats: ['beverage'],
+        defaults: ['Spumante bollicine millesimato brut', 'Long drink analcolico alla frutta di stagione', 'Spritz', 'Acque minerali'] });
+      b.push({ id: 'finger', title: 'I nostri finger food', kind: 'slots', cats: ['finger', 'speciali'],
+        defaults: ['Insalatina di farro, seppioline e basilico fresco', 'Bruschettine mignon ai pomodorini datterini', 'Croccante di pane con fiordilatte, salmone e cime di finocchio', 'Croissant farciti', 'Tartellette farcite', 'Focaccia gourmet con mortadella Capitelli', 'Spiedini di caprese', 'Cornetti salati con mousse di Philadelphia alle erbe aromatiche', 'Mini cestini di pasta frolla alla contadina'] });
+      b.push({ id: 'formaggi', title: 'La selezione dei formaggi', kind: 'slots', cats: ['formaggi'],
+        defaults: ['Gorgonzola dolce di Croce', 'La caciotta nostrana', 'Bocconcini di bufala fresca', 'Grana Padano 24 mesi a scaglie', 'Confetture km 0', 'Miele e mostarda'] });
+      b.push({ id: 'salumi', title: 'I salumi stagionati della nostra cantina', kind: 'slots', cats: ['salumi'],
+        defaults: ['Il salame piacentino stagionato', 'La coppa piacentina di lunga stagionatura', 'Il culatello 12 mesi', 'La pancetta campagnola stagionata 18 mesi'] });
+      if (opts.pescatore) {
+        b.push({ id: 'pesc', title: "L'isola del pescatore", kind: 'slots', cats: ['aperitivo', 'speciali'], only: /tataki|salmone|pesce spada|ostriche|baccal|isola/i,
+          defaults: ['Tataki di tonno rosso in salsa ponzu', 'Il salmone norvegese marinato al pepe rosa e lime', 'Il pesce spada del Mediterraneo marinato alla scorza di arancia', 'Ostriche fine de claire'] });
+      }
+      b.push({ id: 'pane', title: "L'angolo del pane", kind: 'slots', cats: ['pane'],
+        defaults: ['I grissini malfatti', 'Il pane carasau', "La focaccia all'olio EVO e rosmarino", 'Pane casereccio o francesi'] });
+      b.push({ id: 'serv', title: 'Servizio al tavolo', kind: 'fixed',
+        lines: ['Mise en place con tovagliato a vostra scelta', 'Bicchieri in cristallo soffiato, posateria in acciaio, acqua in caraffa'] });
+      b.push({ id: 'primi', title: 'Primi piatti a vostra scelta', kind: 'slots', cats: ['primi'], slotLabel: 'Primo piatto',
+        defaults: new Array(opts.primi).fill('') });
+      b.push({ id: 'secondi', title: 'Secondo piatto con contorno a vostra scelta', kind: 'slots', cats: ['secondi'], slotLabel: 'Secondo piatto', exclude: NO_GENERIC,
+        defaults: [''] });
+      if (opts.dolci) {
+        b.push({ id: 'dolci', title: 'Buffet dei dolci e frutta', kind: 'slots', cats: ['dolci'], exclude: /torta evento|buffet dei dolci|caffè e amari/i,
+          defaults: ['Frutta tagliata sul ghiaccio', 'Gusci di cioccolato fondente ripieni alla crema e velati al cacao', 'Le crostatine alla crema chantilly con frutti di bosco e/o fragole', 'Quadrotti di crostata alle marmellate km0', 'Bignè alla crema pasticcera', 'Bignè al cioccolato'] });
+      }
+      b.push({ id: 'chiusura', title: 'A fine pasto', kind: 'fixed', lines: ['Torta nuziale (extra)', 'Caffè illy', 'Amari tradizionali'] });
+      b.push({ id: 'vini', title: 'I vini a tavola', kind: 'slots', cats: ['beverage'],
+        defaults: ['Bianco Ortrugo DOC Poggiarello', 'Gutturnio frizzante DOC Poggiarello', 'Gutturnio fermo DOC Poggiarello'] });
+      b.push({ id: 'allest', title: 'Allestimenti compresi', kind: 'fixed',
+        lines: ['Allestimento buffet in argenteria antica, ceramica, vetro e legno', 'Fingers serviti in monoporzione ceramica e vetro', 'Tavoli rotondi con tovagliato bianco o avorio', 'Sedia chiavarina con cuscino'] });
+      return b;
+    }
+
+    const PACKAGES = {
+      oro:      { id: 'oro',      name: 'Oro',      price: 115, note: 'Con isola del pescatore e buffet dei dolci.',          blocks: pkgBlocks({ pescatore: true,  dolci: true,  primi: 1 }) },
+      argento:  { id: 'argento',  name: 'Argento',  price: 100, note: 'Un primo e un secondo, senza isola e buffet dolci.',   blocks: pkgBlocks({ pescatore: false, dolci: false, primi: 1 }) },
+      platino:  { id: 'platino',  name: 'Platino',  price: 120, note: 'Isola del pescatore, buffet dolci e due primi.',       blocks: pkgBlocks({ pescatore: true,  dolci: true,  primi: 2 }) }
+    };
+
+    const PKG_TERMS = [
+      'Prezzo a persona, come da pacchetto.',
+      'Prezzo menu staff pari al 50% del prezzo concordato.',
+      'Menu bimbi € 30 (comprende aperitivi e antipasti del buffet e, al tavolo, pasta al pomodoro e cotoletta con patatine).',
+      'Location in esclusiva € 2.800.'
+    ];
+
     /* ------------------------------------------------------------------ */
 
     const form = document.getElementById('configuratorForm');
@@ -944,10 +1084,26 @@
       CATEGORIES.forEach(c => c.items.forEach(i => { if (i[2]) selected.add(key(c.id, i[0])); }));
     }
 
+    /* ----- pacchetto scelto: { pkgId, picks: { 'blockId|indice': titolo } } ----- */
+    let pkgId = '';
+    let picks = {};
+
+    function packageGroups() {
+      const pkg = PACKAGES[pkgId];
+      if (!pkg) return [];
+      return pkg.blocks.map(b => {
+        const items = b.kind === 'fixed'
+          ? b.lines.slice()
+          : b.defaults.map((d, i) => picks[b.id + '|' + i] || '');
+        return { id: 'pkg-' + b.id, title: b.title, pkg: true, items: items.map(t => t || '(da scegliere)') };
+      });
+    }
+
     function groupedSelections() {
-      return allCategories()
-        .map(c => ({ id: c.id, title: c.title, items: c.items.filter(i => selected.has(key(c.id, i.t))).map(i => i.t) }))
+      const extras = allCategories()
+        .map(c => ({ id: c.id, title: pkgId ? 'Extra: ' + c.title : c.title, items: c.items.filter(i => selected.has(key(c.id, i.t))).map(i => i.t) }))
         .filter(g => g.items.length);
+      return packageGroups().concat(extras);
     }
 
     function safe(value, fallback = 'Non specificato') {
@@ -989,6 +1145,7 @@
           (cat.isCustom ? '<button type="button" class="link-button" data-remove-cat="' + esc(cat.id) + '">Rimuovi questa categoria</button>' : '') +
           '</details>';
       }).join('');
+      if (typeof renderPackage === 'function' && packageBox.querySelector('.pkg-editor')) renderPackage();
     }
 
     function renderSummary() {
@@ -1085,12 +1242,91 @@
       if (e.key === 'Enter') { e.preventDefault(); addCategory(); }
     });
 
+    /* ----- selettore pacchetti ----- */
+    const packageBox = document.getElementById('packageBox');
+
+    function blockOptions(b, current) {
+      const seen = new Set(), out = [];
+      const add = t => { const k = t.toLowerCase(); if (t && !seen.has(k)) { seen.add(k); out.push(t); } };
+      b.defaults.forEach(add);
+      allCategories().filter(c => b.cats.indexOf(c.id) !== -1).forEach(c => c.items.forEach(i => {
+        if (b.exclude && b.exclude.test(i.t)) return;
+        if (b.only && !b.only.test(i.t)) return;
+        add(i.t);
+      }));
+      add(current);
+      return out;
+    }
+
+    function applyPackage(id) {
+      pkgId = id;
+      picks = {};
+      const pkg = PACKAGES[id];
+      if (pkg) {
+        pkg.blocks.forEach(b => { if (b.kind === 'slots') b.defaults.forEach((d, i) => { picks[b.id + '|' + i] = d; }); });
+        selected.clear(); // le voci libere diventano solo "Extra" scelti a mano
+      } else {
+        applyDefaults();
+      }
+      renderPackage();
+      renderSections();
+      renderSummary();
+    }
+
+    function renderPackage() {
+      const cards = '<div class="pkg-grid">' +
+        Object.keys(PACKAGES).map(id => {
+          const p = PACKAGES[id];
+          return '<div class="pkg-card pkg-' + id + '">' +
+            '<input type="radio" name="package" id="pkg-' + id + '" value="' + id + '"' + (pkgId === id ? ' checked' : '') + '>' +
+            '<label for="pkg-' + id + '"><strong>' + p.name + '</strong><span class="pkg-price">€ ' + p.price + ' a persona</span><span class="pkg-note">' + esc(p.note) + '</span></label></div>';
+        }).join('') + '</div>' +
+        (pkgId ? '<button type="button" class="link-button" data-pkg-clear style="margin-top:12px">Nessun pacchetto (menu personalizzato)</button>' : '');
+
+      let editor = '';
+      const pkg = PACKAGES[pkgId];
+      if (pkg) {
+        editor = '<div class="pkg-editor pkg-' + pkgId + '">' + pkg.blocks.map(b => {
+          if (b.kind === 'fixed') {
+            return '<div class="pkg-block"><h3>' + esc(b.title) + '</h3><ul class="pkg-fixed">' + b.lines.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul></div>';
+          }
+          const taken = b.defaults.map((d, i) => picks[b.id + '|' + i]);
+          return '<div class="pkg-block"><h3>' + esc(b.title) + '</h3>' + b.defaults.map((d, i) => {
+            const cur = picks[b.id + '|' + i] || '';
+            const options = blockOptions(b, cur).map(t =>
+              '<option value="' + esc(t) + '"' + (t === cur ? ' selected' : '') + (t !== cur && taken.indexOf(t) !== -1 ? ' disabled' : '') + '>' + esc(t) + '</option>').join('');
+            const label = (b.slotLabel || 'Voce') + (b.defaults.length > 1 ? ' ' + (i + 1) : '');
+            return '<div class="pkg-slot"><label for="slot-' + b.id + '-' + i + '">' + esc(label) + '</label>' +
+              '<select id="slot-' + b.id + '-' + i + '" data-block="' + b.id + '" data-idx="' + i + '">' +
+              (cur ? '' : '<option value="" selected disabled>Scegli…</option>') + options + '</select></div>';
+          }).join('') + '</div>';
+        }).join('') + '<p class="pkg-hint">Qui sopra sostituisci le voci del pacchetto; più in basso le categorie del catalogo si aggiungono come «Extra» fuori pacchetto.</p></div>';
+      }
+      packageBox.innerHTML = cards + editor;
+    }
+
+    packageBox.addEventListener('change', e => {
+      const el = e.target;
+      if (el.matches('input[name="package"]')) { applyPackage(el.value); return; }
+      if (el.matches('select[data-block]')) {
+        picks[el.dataset.block + '|' + el.dataset.idx] = el.value;
+        renderPackage();
+        renderSummary();
+      }
+    });
+
+    packageBox.addEventListener('click', e => {
+      if (e.target.closest('[data-pkg-clear]')) applyPackage('');
+    });
+
     /* ----- messaggio WhatsApp ----- */
     function buildMessage() {
       const groups = groupedSelections();
+      const pkgSel = PACKAGES[pkgId];
       const lines = [
         'Richiesta configuratore - La Tenuta di Bacco',
         '',
+        ...(pkgSel ? ['*Pacchetto:* ' + pkgSel.name + ' (€ ' + pkgSel.price + ' a persona)', ''] : []),
         '*Nome:* ' + safe(form.name.value),
         '*Telefono:* ' + safe(form.phone.value),
         '*Email:* ' + safe(form.email.value),
@@ -1131,9 +1367,8 @@
 
     resetBtn.addEventListener('click', () => {
       form.reset();
-      applyDefaults();
-      renderSections();
-      renderSummary();
+      amounts = {};
+      applyPackage('');
       statusEl.textContent = '';
     });
 
@@ -1173,17 +1408,32 @@
 
       const contacts = [val('phone'), val('email')].filter(Boolean).join(' · ');
 
+      const pkg = PACKAGES[pkgId];
+      const guestsN = parseInt(val('guests'), 10);
+      if (pkg && amounts.__total === undefined && guestsN > 0) {
+        amounts.__total = '€ ' + (guestsN * pkg.price).toLocaleString('it-IT');
+      }
+
       const catsHtml = groups.length
         ? groups.map(g =>
             '<section class="doc-cat">' +
               '<div class="doc-cat-head"><h3>' + esc(g.title) + '</h3>' +
-              '<label class="amount-wrap">Importo <input class="amount" type="text" data-key="' + esc(g.id) + '" value="' + esc(amounts[g.id] || '') + '" placeholder="€"></label></div>' +
+              (g.pkg ? '' : '<label class="amount-wrap">Importo <input class="amount" type="text" data-key="' + esc(g.id) + '" value="' + esc(amounts[g.id] || '') + '" placeholder="€"></label>') + '</div>' +
               '<ul>' + g.items.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>' +
             '</section>'
           ).join('')
         : '<p class="small">Nessuna proposta selezionata.</p>';
 
       const requests = val('customRequests');
+
+      docEl.className = 'panel doc' + (pkg ? ' pkg-' + pkg.id : '');
+
+      const banner = pkg
+        ? '<div class="pkg-banner"><div><small>Pacchetto</small><h2>' + esc(pkg.name) + '</h2></div>' +
+          '<div class="pkg-banner-price"><strong>€ ' + pkg.price + '</strong>a persona</div></div>'
+        : '';
+      const terms = pkg ? '<div class="doc-extras"><strong>Condizioni del pacchetto ' + esc(pkg.name) + '</strong><ul>' +
+        PKG_TERMS.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul></div>' : '';
 
       docEl.innerHTML =
         '<div class="doc-toolbar no-print">' +
@@ -1195,14 +1445,16 @@
           '<div class="brand"><span class="brand-mark" aria-hidden="true">' + LOGO_SVG + '</span>La Tenuta di Bacco</div>' +
           '<div class="doc-contact">Località Rossia di Gossolengo 16, 29020 Piacenza PC<br>info@latenutadibacco.it · +39 333 979 1543</div>' +
         '</div>' +
-        '<h2 class="doc-title">Preventivo</h2>' +
+        '<h2 class="doc-title">Preventivo' + (pkg ? ' · Pacchetto ' + esc(pkg.name) : '') + '</h2>' +
+        banner +
         '<p class="doc-date">Data: ' + esc(today) + '</p>' +
         '<div class="doc-recipient"><strong>Spett.le</strong> ' + (val('name') ? esc(val('name')) : '______________________') +
           (contacts ? '<br><span class="small">' + esc(contacts) + '</span>' : '') + '</div>' +
-        '<p><strong>Oggetto:</strong> Preventivo servizio catering' + (eventType ? ' per evento «' + esc(eventType) + '»' : '') + '</p>' +
+        '<p><strong>Oggetto:</strong> Preventivo servizio catering' + (pkg ? ' – pacchetto ' + esc(pkg.name) : '') + (eventType ? ' per evento «' + esc(eventType) + '»' : '') + '</p>' +
         (meta.length ? '<dl class="doc-meta">' + meta.map(r => '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>').join('') + '</dl>' : '') +
         catsHtml +
         '<div class="doc-total"><strong>Totale</strong><input class="amount" type="text" data-key="__total" value="' + esc(amounts.__total || '') + '" placeholder="€"></div>' +
+        terms +
         (requests ? '<div class="doc-block"><h3>Richieste personalizzate</h3><p>' + esc(requests).replace(/\n/g, '<br>') + '</p></div>' : '') +
         '<div class="doc-block"><h3>Condizioni</h3><div class="doc-conditions" contenteditable="true">' + conditionsHtml + '</div></div>' +
         '<p class="small">Si prega di comunicare eventuali intolleranze e allergie.</p>' +
@@ -1211,10 +1463,18 @@
       docEl.hidden = false;
     }
 
+    function missingPicks() {
+      const pkg = PACKAGES[pkgId];
+      if (!pkg) return 0;
+      let n = 0;
+      pkg.blocks.forEach(bl => { if (bl.kind === 'slots') bl.defaults.forEach((d, i) => { if (!picks[bl.id + '|' + i]) n++; }); });
+      return n;
+    }
+
     buildBtn.addEventListener('click', () => {
       buildDoc();
       docEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      statusEl.textContent = 'Preventivo creato: compila gli importi e stampa o salva in PDF.';
+      statusEl.textContent = missingPicks() ? 'Preventivo creato, ma mancano ' + missingPicks() + ' scelte nel pacchetto (primo/secondo).' : 'Preventivo creato: controlla il totale e stampa o salva in PDF.';
     });
 
     docEl.addEventListener('click', e => {
@@ -1234,6 +1494,7 @@
     });
 
     applyDefaults();
+    renderPackage();
     renderSections();
     renderSummary();
   </script>
