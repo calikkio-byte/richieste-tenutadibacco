@@ -558,6 +558,13 @@
     .pkg-argento { --pk: #8a949f; --pk-soft: #eef0f3; --pk-dark: #4b535c; --pk-grad: linear-gradient(135deg, #b3bcc6 0%, #6f7a86 100%); }
     .pkg-platino { --pk: #3f4a5e; --pk-soft: #e6eaf1; --pk-dark: #232b3a; --pk-grad: linear-gradient(135deg, #5f6f8c 0%, #1f2736 100%); }
 
+    .addon-block { --pk: #b0607a; --pk-soft: #f9e6ec; --pk-dark: #7d3349; margin-top: 18px; }
+    .addon-block h3 { font-size: 26px; margin-bottom: 4px; }
+    .addon-block .pkg-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-top: 10px; }
+    .addon-list { margin: 10px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+    .addon-list li { margin: 2px 0; }
+    .addon-list .addon-sec { list-style: none; margin-left: -18px; margin-top: 8px; font-weight: 700; color: var(--text); }
+
     .pkg-editor { margin-top: 18px; display: grid; gap: 16px; }
     .pkg-editor[hidden] { display: none; }
 
@@ -713,6 +720,12 @@
           <summary><h2>Pacchetto</h2></summary>
           <p class="small">Scegli un pacchetto: le voci sono già impostate e puoi sostituirle una per una con altre proposte del catalogo. Il numero di voci non cambia.</p>
           <div id="packageBox"></div>
+        </details>
+
+        <!-- Servizi aggiuntivi (floreale, confettata): generati da JavaScript (vedi FLORAL) -->
+        <details class="section" id="addonSection">
+          <summary><h2>Servizi aggiuntivi</h2></summary>
+          <div id="addonBox"></div>
         </details>
 
         <!-- Categorie e proposte: generate da JavaScript (vedi CATEGORIES) -->
@@ -1026,6 +1039,66 @@
       'Location in esclusiva € 2.800.'
     ];
 
+    /* ------------------------------------------------------------------
+       SERVIZI AGGIUNTIVI
+       - Allestimento floreale per matrimonio (Fiorista Kadoo): 3 livelli.
+         Per ogni voce: sigle dei livelli in cui è inclusa (b/m/e).
+       - Confettata con allestimento: € 4 a persona + IVA.
+       ------------------------------------------------------------------ */
+    const FLORAL = {
+      base:  { name: 'Base',  price: 800,  guests: 'fino a 50 persone' },
+      medio: { name: 'Medio', price: 1500, guests: '50-100 persone' },
+      extra: { name: 'Extra', price: 2500, guests: '100-150 persone' }
+    };
+
+    const FLORAL_ITEMS = [
+      ['Rito', 'Decorazione sedie lati navata', 'b'],
+      ['Rito', 'Decorazione navata con colonne', 'me'],
+      ['Rito', 'Cattedra', 'bme'],
+      ['Rito', 'Backdrop semplice', 'bme'],
+      ['Rito', 'Lancio petali', 'bme'],
+      ['Accessori', 'Bouquet', 'bme'],
+      ['Accessori', 'Bouquet lancio', 'me'],
+      ['Accessori', '5 bottoniere/polsiere', 'bm'],
+      ['Accessori', '10 bottoniere/polsiere', 'e'],
+      ['Ricevimento', 'Centrotavola cena', 'bme'],
+      ['Ricevimento', 'Buffet aperitivo', 'me'],
+      ['Servizi finali', 'Flower bar finale', 'e'],
+      ['Servizi finali', 'Tableau marriage compreso', 'bme']
+    ];
+
+    const CONFETTATA = {
+      price: 4,
+      title: 'Confettata con allestimento',
+      lead: 'Confettata scenografica con allestimento personalizzato del tavolo dei dolci.',
+      items: [
+        "L'allestimento del tavolo confetti, tovaglia con runner personalizzato, luci tematiche",
+        'Vasi personalizzati per ogni gusto, firmati con il logo degli sposi e un cartoncino per ogni gusto',
+        'Sacchetti di tulle o caroncini personalizzati'
+      ]
+    };
+
+    function floralItems(id) {
+      const k = id.charAt(0);
+      return FLORAL_ITEMS.filter(r => r[2].indexOf(k) !== -1);
+    }
+
+    let floralId = '';
+    let confettata = false;
+
+    function addonGroups() {
+      const out = [];
+      if (FLORAL[floralId]) {
+        const f = FLORAL[floralId];
+        out.push({ id: 'add-floral', pkg: true, title: 'Allestimento floreale matrimonio – ' + f.name + ' (€ ' + f.price.toLocaleString('it-IT') + ')',
+          items: floralItems(floralId).map(r => r[1]) });
+      }
+      if (confettata) {
+        out.push({ id: 'add-confettata', pkg: true, title: CONFETTATA.title + ' (€ ' + CONFETTATA.price + ' a persona + IVA)', items: CONFETTATA.items.slice() });
+      }
+      return out;
+    }
+
     /* ------------------------------------------------------------------ */
 
     const form = document.getElementById('configuratorForm');
@@ -1103,7 +1176,7 @@
       const extras = allCategories()
         .map(c => ({ id: c.id, title: pkgId ? 'Extra: ' + c.title : c.title, items: c.items.filter(i => selected.has(key(c.id, i.t))).map(i => i.t) }))
         .filter(g => g.items.length);
-      return packageGroups().concat(extras);
+      return packageGroups().concat(addonGroups(), extras);
     }
 
     function safe(value, fallback = 'Non specificato') {
@@ -1319,6 +1392,62 @@
       if (e.target.closest('[data-pkg-clear]')) applyPackage('');
     });
 
+    /* ----- servizi aggiuntivi ----- */
+    const addonBox = document.getElementById('addonBox');
+
+    function renderAddons() {
+      const fl = FLORAL[floralId];
+      let html = '<div class="addon-block"><h3>Allestimento floreale per matrimonio</h3>' +
+        '<p class="small">Fiorista Kadoo · il livello dipende dal numero di invitati.</p>' +
+        '<div class="pkg-grid">' +
+        '<div class="pkg-card"><input type="radio" name="floral" id="fl-none" value=""' + (!floralId ? ' checked' : '') + '>' +
+          '<label for="fl-none"><strong>Nessuno</strong><span class="pkg-note">Senza allestimento floreale.</span></label></div>' +
+        Object.keys(FLORAL).map(id => {
+          const f = FLORAL[id];
+          return '<div class="pkg-card"><input type="radio" name="floral" id="fl-' + id + '" value="' + id + '"' + (floralId === id ? ' checked' : '') + '>' +
+            '<label for="fl-' + id + '"><strong>' + f.name + '</strong><span class="pkg-price">€ ' + f.price.toLocaleString('it-IT') + '</span><span class="pkg-note">' + f.guests + '</span></label></div>';
+        }).join('') + '</div>';
+
+      if (fl) {
+        let last = '';
+        html += '<ul class="addon-list">' + floralItems(floralId).map(r => {
+          const head = r[0] !== last ? '<li class="addon-sec">' + esc(r[0]) + '</li>' : '';
+          last = r[0];
+          return head + '<li>' + esc(r[1]) + '</li>';
+        }).join('') + '</ul>';
+      }
+      html += '</div>';
+
+      html += '<div class="addon-block"><h3>Confettata</h3><div class="pkg-grid"><div class="pkg-card">' +
+        '<input type="checkbox" id="confettata" name="confettata"' + (confettata ? ' checked' : '') + '>' +
+        '<label for="confettata"><strong>' + esc(CONFETTATA.title) + '</strong><span class="pkg-price">€ ' + CONFETTATA.price + ' a persona + IVA</span>' +
+        '<span class="pkg-note">' + esc(CONFETTATA.lead) + '</span></label></div></div>';
+      if (confettata) html += '<ul class="addon-list">' + CONFETTATA.items.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>';
+      html += '</div>';
+
+      addonBox.innerHTML = html;
+      document.getElementById('addonSection').open = true;
+    }
+
+    addonBox.addEventListener('change', e => {
+      const el = e.target;
+      if (el.matches('input[name="floral"]')) floralId = el.value;
+      else if (el.id === 'confettata') confettata = el.checked;
+      else return;
+      renderAddons();
+      renderSummary();
+    });
+
+    /* totale suggerito: pacchetto × ospiti + floreale + confettata × ospiti (IVA esclusa sulla confettata) */
+    function suggestedTotal(guests) {
+      const pkg = PACKAGES[pkgId];
+      let total = 0, any = false;
+      if (pkg && guests > 0) { total += guests * pkg.price; any = true; }
+      if (FLORAL[floralId]) { total += FLORAL[floralId].price; any = true; }
+      if (confettata && guests > 0) { total += guests * CONFETTATA.price; any = true; }
+      return any ? '€ ' + total.toLocaleString('it-IT') + (confettata ? ' (+ IVA sulla confettata)' : '') : '';
+    }
+
     /* ----- messaggio WhatsApp ----- */
     function buildMessage() {
       const groups = groupedSelections();
@@ -1368,6 +1497,9 @@
     resetBtn.addEventListener('click', () => {
       form.reset();
       amounts = {};
+      floralId = '';
+      confettata = false;
+      renderAddons();
       applyPackage('');
       statusEl.textContent = '';
     });
@@ -1383,7 +1515,7 @@
       "<li>Per cancellazioni comunicate fino a 30 giorni prima dell'evento verrà trattenuta la caparra confirmatoria.</li>" +
       "<li>Per cancellazioni comunicate dal 29° giorno prima dell'evento la penale corrisponde al 50% dell'importo totale pattuito.</li>" +
       '<li>Il servizio di catering termina entro le 00:30; con il servizio open bar il termine è prorogato alle 01:00. Le ore extra saranno conteggiate a parte, a copertura dei costi di staff e logistica.</li>' +
-      '<li>Il vino si intende in ragione di 1 bottiglia ogni 2 ospiti per tipologia; le bottiglie extra saranno addebitate a consuntivo.</li>' +
+      '<li>Il vino si intende in ragione di 1 bottiglia ogni 2 ospiti in totale, ripartita tra le tipologie di vino scelte (non 1 bottiglia ogni 2 ospiti per ciascuna tipologia): ad esempio con 4 ospiti le bottiglie complessive sono 2. Le bottiglie extra saranno addebitate a consuntivo.</li>' +
       '<li>Il menu può subire variazioni in base alla stagionalità.</li>' +
       '</ul>';
 
@@ -1410,9 +1542,7 @@
 
       const pkg = PACKAGES[pkgId];
       const guestsN = parseInt(val('guests'), 10);
-      if (pkg && amounts.__total === undefined && guestsN > 0) {
-        amounts.__total = '€ ' + (guestsN * pkg.price).toLocaleString('it-IT');
-      }
+      if (!amounts.__totalManual) amounts.__total = suggestedTotal(guestsN);
 
       const catsHtml = groups.length
         ? groups.map(g =>
@@ -1488,6 +1618,7 @@
     docEl.addEventListener('input', e => {
       if (e.target.classList && e.target.classList.contains('amount')) {
         amounts[e.target.dataset.key] = e.target.value;
+        if (e.target.dataset.key === '__total') amounts.__totalManual = true;
       }
       const cond = e.target.closest ? e.target.closest('.doc-conditions') : null;
       if (cond) conditionsHtml = cond.innerHTML;
@@ -1495,6 +1626,8 @@
 
     applyDefaults();
     renderPackage();
+    renderAddons();
+    document.getElementById('addonSection').open = false;
     renderSections();
     renderSummary();
   </script>
